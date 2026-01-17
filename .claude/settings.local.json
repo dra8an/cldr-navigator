@@ -10,7 +10,13 @@
       "Bash(npm install)",
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
-      "Bash(timeout 10 npm run dev:*)"
+      "Bash(timeout 10 npm run dev:*)",
+      "Bash(node test-xml-extraction.js:*)",
+      "Bash(npm test:*)",
+      "Bash(chmod:*)",
+      "Bash(ls:*)",
+      "Bash(tree:*)",
+      "Bash(find:*)"
     ]
   }
 }

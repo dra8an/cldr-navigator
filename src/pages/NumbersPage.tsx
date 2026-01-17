@@ -3,12 +3,16 @@ import { Loader2, AlertCircle } from 'lucide-react'
 import { useLocaleStore } from '@/store/localeStore'
 import { useNumberData } from '@/hooks/useCldrData'
 import { buildJsonPath } from '@/lib/mapping/resolver'
+import { normalizeLocaleForCldr } from '@/lib/cldr/loader'
 import SourceBadge from '@/components/source/SourceBadge'
 
 export default function NumbersPage() {
   const { selectedLocale } = useLocaleStore()
   const { data, isLoading, error } = useNumberData(selectedLocale)
   const [customNumber, setCustomNumber] = useState('1234567.89')
+
+  // Get the normalized locale for accessing CLDR data
+  const normalizedLocale = normalizeLocaleForCldr(selectedLocale)
 
   if (isLoading) {
     return (
@@ -35,7 +39,7 @@ export default function NumbersPage() {
     )
   }
 
-  const numbers = data?.main?.[selectedLocale]?.numbers
+  const numbers = data?.main?.[normalizedLocale]?.numbers
   const symbols = numbers?.['symbols-numberSystem-latn']
   const decimalFormats = numbers?.['decimalFormats-numberSystem-latn']
   const percentFormats = numbers?.['percentFormats-numberSystem-latn']
@@ -84,8 +88,20 @@ export default function NumbersPage() {
           <span className="font-mono font-semibold text-foreground">
             {selectedLocale}
           </span>
+          {' '}(using CLDR data for <span className="font-mono">{normalizedLocale}</span>)
         </p>
       </div>
+
+      {/* Debug info - can be removed later */}
+      {!symbols && !decimalFormats && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm">
+          <p className="font-semibold text-yellow-900">Debug Info:</p>
+          <p className="text-yellow-800">Data loaded: {data ? 'Yes' : 'No'}</p>
+          <p className="text-yellow-800">Main keys: {data?.main ? Object.keys(data.main).join(', ') : 'None'}</p>
+          <p className="text-yellow-800">Numbers object: {numbers ? 'Found' : 'Not found'}</p>
+          <p className="text-yellow-800">Symbols: {symbols ? 'Found' : 'Not found'}</p>
+        </div>
+      )}
 
       {/* Number Symbols */}
       <div className="bg-card border rounded-lg p-6">
@@ -99,12 +115,12 @@ export default function NumbersPage() {
                 </label>
                 <SourceBadge
                   jsonPath={buildJsonPath(
-                    selectedLocale,
+                    normalizedLocale,
                     'numbers',
                     'symbols-numberSystem-latn',
                     'decimal'
                   )}
-                  locale={selectedLocale}
+                  locale={normalizedLocale}
                 />
               </div>
               <div className="text-2xl font-mono">{symbols.decimal}</div>
@@ -124,7 +140,7 @@ export default function NumbersPage() {
                     'symbols-numberSystem-latn',
                     'group'
                   )}
-                  locale={selectedLocale}
+                  locale={normalizedLocale}
                 />
               </div>
               <div className="text-2xl font-mono">{symbols.group}</div>
@@ -144,7 +160,7 @@ export default function NumbersPage() {
                     'symbols-numberSystem-latn',
                     'percentSign'
                   )}
-                  locale={selectedLocale}
+                  locale={normalizedLocale}
                 />
               </div>
               <div className="text-2xl font-mono">{symbols.percentSign}</div>
@@ -164,7 +180,7 @@ export default function NumbersPage() {
                     'symbols-numberSystem-latn',
                     'plusSign'
                   )}
-                  locale={selectedLocale}
+                  locale={normalizedLocale}
                 />
               </div>
               <div className="text-2xl font-mono">{symbols.plusSign}</div>
@@ -184,7 +200,7 @@ export default function NumbersPage() {
                     'symbols-numberSystem-latn',
                     'minusSign'
                   )}
-                  locale={selectedLocale}
+                  locale={normalizedLocale}
                 />
               </div>
               <div className="text-2xl font-mono">{symbols.minusSign}</div>
@@ -204,7 +220,7 @@ export default function NumbersPage() {
                     'symbols-numberSystem-latn',
                     'exponential'
                   )}
-                  locale={selectedLocale}
+                  locale={normalizedLocale}
                 />
               </div>
               <div className="text-2xl font-mono">{symbols.exponential}</div>
@@ -230,7 +246,7 @@ export default function NumbersPage() {
                     'decimalFormats-numberSystem-latn',
                     'standard'
                   )}
-                  locale={selectedLocale}
+                  locale={normalizedLocale}
                 />
               </div>
               <div className="font-mono text-sm mb-2">
@@ -255,7 +271,7 @@ export default function NumbersPage() {
                     'percentFormats-numberSystem-latn',
                     'standard'
                   )}
-                  locale={selectedLocale}
+                  locale={normalizedLocale}
                 />
               </div>
               <div className="font-mono text-sm mb-2">
@@ -280,7 +296,7 @@ export default function NumbersPage() {
                     'currencyFormats-numberSystem-latn',
                     'standard'
                   )}
-                  locale={selectedLocale}
+                  locale={normalizedLocale}
                 />
               </div>
               <div className="font-mono text-sm mb-2">
@@ -305,7 +321,7 @@ export default function NumbersPage() {
                     'scientificFormats-numberSystem-latn',
                     'standard'
                   )}
-                  locale={selectedLocale}
+                  locale={normalizedLocale}
                 />
               </div>
               <div className="font-mono text-sm mb-2">
@@ -388,7 +404,7 @@ export default function NumbersPage() {
                 'numbers',
                 'defaultNumberingSystem'
               )}
-              locale={selectedLocale}
+              locale={normalizedLocale}
             />
           </div>
         </div>

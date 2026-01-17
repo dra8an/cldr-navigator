@@ -1,4 +1,5 @@
 import type { CldrData, LocaleCode } from '@/types'
+import { localeData } from './locale-data'
 
 /**
  * Cache for loaded CLDR data to avoid redundant imports
@@ -34,11 +35,13 @@ export async function loadNumberData(locale: LocaleCode): Promise<CldrData> {
   const cacheKey = `numbers-${normalizedLocale}`
 
   if (!cldrCache.has(cacheKey)) {
-    const loadPromise = import(
-      /* @vite-ignore */
-      `cldr-numbers-full/main/${normalizedLocale}/numbers.json`
-    ).then(module => module.default)
+    const data = (localeData.numbers as any)[normalizedLocale]
 
+    if (!data) {
+      throw new Error(`CLDR number data not found for locale: ${normalizedLocale}. Available locales: ${Object.keys(localeData.numbers).join(', ')}`)
+    }
+
+    const loadPromise = Promise.resolve(data)
     cldrCache.set(cacheKey, loadPromise)
   }
 
@@ -53,11 +56,13 @@ export async function loadDateData(locale: LocaleCode): Promise<CldrData> {
   const cacheKey = `dates-${normalizedLocale}`
 
   if (!cldrCache.has(cacheKey)) {
-    const loadPromise = import(
-      /* @vite-ignore */
-      `cldr-dates-full/main/${normalizedLocale}/ca-gregorian.json`
-    ).then(module => module.default)
+    const data = (localeData.dates as any)[normalizedLocale]
 
+    if (!data) {
+      throw new Error(`CLDR date data not found for locale: ${normalizedLocale}`)
+    }
+
+    const loadPromise = Promise.resolve(data)
     cldrCache.set(cacheKey, loadPromise)
   }
 
@@ -72,11 +77,13 @@ export async function loadLocaleDisplayNames(locale: LocaleCode): Promise<CldrDa
   const cacheKey = `localenames-${normalizedLocale}`
 
   if (!cldrCache.has(cacheKey)) {
-    const loadPromise = import(
-      /* @vite-ignore */
-      `cldr-localenames-full/main/${normalizedLocale}/languages.json`
-    ).then(module => module.default)
+    const data = (localeData.localeNames as any)[normalizedLocale]
 
+    if (!data) {
+      throw new Error(`CLDR locale names not found for locale: ${normalizedLocale}`)
+    }
+
+    const loadPromise = Promise.resolve(data)
     cldrCache.set(cacheKey, loadPromise)
   }
 
@@ -91,11 +98,13 @@ export async function loadCurrencyData(locale: LocaleCode): Promise<CldrData> {
   const cacheKey = `currencies-${normalizedLocale}`
 
   if (!cldrCache.has(cacheKey)) {
-    const loadPromise = import(
-      /* @vite-ignore */
-      `cldr-numbers-full/main/${normalizedLocale}/currencies.json`
-    ).then(module => module.default)
+    const data = (localeData.currencies as any)[normalizedLocale]
 
+    if (!data) {
+      throw new Error(`CLDR currency data not found for locale: ${normalizedLocale}`)
+    }
+
+    const loadPromise = Promise.resolve(data)
     cldrCache.set(cacheKey, loadPromise)
   }
 
@@ -127,8 +136,9 @@ export async function getAvailableLocales(): Promise<string[]> {
   const cacheKey = 'available-locales'
 
   if (!cldrCache.has(cacheKey)) {
-    const loadPromise = import('cldr-core/availableLocales.json')
-      .then(module => module.default.availableLocales.full)
+    const loadPromise = Promise.resolve(
+      (localeData.core.availableLocales as any).availableLocales.full as string[]
+    )
 
     cldrCache.set(cacheKey, loadPromise)
   }
@@ -148,18 +158,14 @@ export async function getLocaleInfo(locale: LocaleCode): Promise<{
   const cacheKey = `locale-info-${normalizedLocale}`
 
   if (!cldrCache.has(cacheKey)) {
-    const loadPromise = import(
-      /* @vite-ignore */
-      `cldr-core/supplemental/likelySubtags.json`
-    ).then(() => {
-      const parts = locale.split('-')
-      return {
-        language: parts[0],
-        script: parts.length > 1 && parts[1].length === 4 ? parts[1] : undefined,
-        region: parts.length > 1 && parts[parts.length - 1].length === 2
-          ? parts[parts.length - 1]
-          : undefined,
-      }
+    const loadPromise = Promise.resolve({
+      language: locale.split('-')[0],
+      script: locale.split('-').length > 1 && locale.split('-')[1].length === 4
+        ? locale.split('-')[1]
+        : undefined,
+      region: locale.split('-').length > 1 && locale.split('-')[locale.split('-').length - 1].length === 2
+        ? locale.split('-')[locale.split('-').length - 1]
+        : undefined,
     })
 
     cldrCache.set(cacheKey, loadPromise)

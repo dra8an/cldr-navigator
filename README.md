@@ -58,7 +58,9 @@ npm run preview
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
 - `npm run lint` - Run ESLint
-- `npm run test` - Run tests (Vitest)
+- `npm test` - Run test suite (Vitest in watch mode)
+- `npm test -- --run` - Run tests once (CI mode)
+- `npm test -- --coverage` - Run tests with coverage report
 
 ## Project Structure
 
@@ -154,6 +156,38 @@ Example mapping:
 - **Caching**: 24-hour cache for both CLDR data and XML files
 - **LocalStorage**: Persists recent locales and selected locale
 
+## Testing
+
+The project includes comprehensive unit tests for all utility functions:
+
+```bash
+# Run tests in watch mode
+npm test
+
+# Run tests once
+npm test -- --run
+
+# Run with coverage
+npm test -- --coverage
+```
+
+**Test Coverage:**
+- 57 tests across 3 test suites
+- Core utilities: XML extraction, JSON-to-XPath mapping, locale normalization
+- Critical bug prevention: Ensures XML snippets extract from correct context
+
+See [TESTING_GUIDE.md](./Docs/TESTING_GUIDE.md) for detailed testing documentation.
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for a detailed history of changes, bug fixes, and new features.
+
+**Latest Updates:**
+- Phase 1 MVP completed with Number Formatting demo
+- Comprehensive test suite with 57 tests
+- Fixed critical XML snippet extraction bug
+- Organized documentation structure
+
 ## Browser Support
 
 - Chrome/Edge (last 2 versions)
@@ -163,6 +197,14 @@ Example mapping:
 ## Contributing
 
 This is an educational project demonstrating CLDR data structure and XML source linking. Future enhancements welcome!
+
+When contributing:
+1. Add tests for new features
+2. Update [CHANGELOG.md](./CHANGELOG.md) under `[Unreleased]`
+3. Follow the existing code style
+4. Ensure all tests pass: `npm test -- --run`
+
+See [Docs/](./Docs/) for detailed documentation.
 
 ## License
 

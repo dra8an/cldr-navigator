@@ -53,53 +53,110 @@ export async function fetchXmlFromGitHub(xmlPath: string): Promise<string> {
 
 /**
  * Extracts a specific XML snippet based on XPath-like selector
- * This is a simplified version - for MVP we'll show context around the element
+ * Improved version that follows the full path context
  */
 export function extractXmlSnippet(
   xmlContent: string,
   xpath: string,
   contextLines = 3
 ): { snippet: string; lineNumber?: number } {
-  // For MVP, we'll do a simple search for key elements from the xpath
-  // A full XPath parser would be ideal but is complex
+  // Parse XPath to extract path components
+  // Example: "//ldml/numbers/decimalFormats[@numberSystem='latn']/decimalFormatLength/decimalFormat/pattern"
+  const pathParts = xpath.split('/').filter(p => p && p !== '')
 
-  // Extract key parts from xpath
-  // Example: "//ldml/numbers/symbols[@numberSystem='latn']/decimal"
-  const pathParts = xpath.split('/')
-  const lastElement = pathParts[pathParts.length - 1]
-  const elementName = lastElement.split('[')[0]
-
-  // Search for the element in XML
-  const lines = xmlContent.split('\n')
-  let foundLineIndex = -1
-
-  // Look for element with attributes if specified
-  if (lastElement.includes('[')) {
-    // Parse attribute from xpath like "symbols[@numberSystem='latn']"
-    const attrMatch = lastElement.match(/\[@(\w+)='([^']+)'\]/)
-    if (attrMatch) {
-      const [, attrName, attrValue] = attrMatch
-      const elementNameOnly = lastElement.split('[')[0]
-
-      // Find line with both element and attribute
-      foundLineIndex = lines.findIndex(line =>
-        line.includes(`<${elementNameOnly}`) &&
-        line.includes(`${attrName}="${attrValue}"`)
-      )
+  if (pathParts.length === 0) {
+    return {
+      snippet: '<!-- Invalid XPath -->',
+      lineNumber: undefined,
     }
   }
 
-  // Fallback: search for just the element name
-  if (foundLineIndex === -1) {
-    foundLineIndex = lines.findIndex(line =>
-      line.includes(`<${elementName}>`) || line.includes(`<${elementName} `)
+  // Remove 'ldml' from the start since all CLDR files start with it
+  if (pathParts[0] === 'ldml') {
+    pathParts.shift()
+  }
+
+  const lines = xmlContent.split('\n')
+
+  // Strategy: Find the target element by looking for it within its parent context
+  // We'll search for key parent elements first to narrow down the search area
+
+  let searchStartLine = 0
+  let searchEndLine = lines.length
+
+  // Extract distinguishing parts from the path (elements with attributes or unique parents)
+  const keyElements: Array<{ element: string; attr?: { name: string; value: string } }> = []
+
+  for (const part of pathParts) {
+    const element = part.split('[')[0]
+    const attrMatch = part.match(/\[@(\w+)='([^']+)'\]/)
+
+    if (attrMatch) {
+      keyElements.push({
+        element,
+        attr: { name: attrMatch[1], value: attrMatch[2] }
+      })
+    } else if (keyElements.length === 0 || pathParts.indexOf(part) < 2) {
+      // Include first few elements to establish context
+      keyElements.push({ element })
+    }
+  }
+
+  // Search for the most specific parent element first
+  for (let i = keyElements.length - 2; i >= 0; i--) {
+    const key = keyElements[i]
+    const foundIndex = lines.findIndex((line, idx) => {
+      if (idx < searchStartLine || idx >= searchEndLine) return false
+
+      if (key.attr) {
+        return line.includes(`<${key.element}`) &&
+               line.includes(`${key.attr.name}="${key.attr.value}"`)
+      } else {
+        return line.includes(`<${key.element}>`) || line.includes(`<${key.element} `)
+      }
+    })
+
+    if (foundIndex !== -1) {
+      searchStartLine = foundIndex
+      // Find the closing tag to limit search scope
+      const closingTag = `</${key.element}>`
+      const endIndex = lines.findIndex((line, idx) =>
+        idx > foundIndex && line.includes(closingTag)
+      )
+      if (endIndex !== -1) {
+        searchEndLine = endIndex + 1
+      }
+      break
+    }
+  }
+
+  // Now search for the final element within the narrowed scope
+  const lastElement = pathParts[pathParts.length - 1]
+  const elementName = lastElement.split('[')[0]
+
+  let foundLineIndex = -1
+
+  // Check if the last element has attributes
+  const lastAttrMatch = lastElement.match(/\[@(\w+)='([^']+)'\]/)
+
+  if (lastAttrMatch) {
+    const [, attrName, attrValue] = lastAttrMatch
+    foundLineIndex = lines.findIndex((line, idx) =>
+      idx >= searchStartLine && idx < searchEndLine &&
+      line.includes(`<${elementName}`) &&
+      line.includes(`${attrName}="${attrValue}"`)
+    )
+  } else {
+    // Search within the narrowed scope
+    foundLineIndex = lines.findIndex((line, idx) =>
+      idx >= searchStartLine && idx < searchEndLine &&
+      (line.includes(`<${elementName}>`) || line.includes(`<${elementName} `))
     )
   }
 
   if (foundLineIndex === -1) {
-    // Not found, return a generic message
     return {
-      snippet: `<!-- Element ${elementName} not found in XML -->`,
+      snippet: `<!-- Element ${elementName} not found in expected context -->`,
       lineNumber: undefined,
     }
   }
