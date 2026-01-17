@@ -16,7 +16,11 @@
       "Bash(chmod:*)",
       "Bash(ls:*)",
       "Bash(tree:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run verify:*)",
+      "Bash(npm run test:run:*)",
+      "Bash(npm run dev:*)"
     ]
   }
 }

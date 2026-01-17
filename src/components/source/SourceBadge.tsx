@@ -17,12 +17,14 @@ export default function SourceBadge({ jsonPath, locale }: SourceBadgeProps) {
         <span>Source</span>
       </button>
 
-      <SourcePanel
-        jsonPath={jsonPath}
-        locale={locale}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      />
+      {isOpen && (
+        <SourcePanel
+          jsonPath={jsonPath}
+          locale={locale}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+        />
+      )}
     </>
   )
 }

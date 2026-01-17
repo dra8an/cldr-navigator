@@ -172,9 +172,10 @@ npm test -- --coverage
 ```
 
 **Test Coverage:**
-- 57 tests across 3 test suites
+- 62 tests across 3 test suites
 - Core utilities: XML extraction, JSON-to-XPath mapping, locale normalization
 - Critical bug prevention: Ensures XML snippets extract from correct context
+- Regression tests: Verifies different format types point to different XML lines
 
 See [TESTING_GUIDE.md](./Docs/TESTING_GUIDE.md) for detailed testing documentation.
 

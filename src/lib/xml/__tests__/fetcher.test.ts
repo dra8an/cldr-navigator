@@ -107,8 +107,8 @@ describe('XML Fetcher Utilities', () => {
         )
 
         expect(result.lineNumber).toBeDefined()
-        // The function should find a pattern element, even if scope narrowing isn't perfect
-        expect(result.snippet).toContain('<pattern>')
+        expect(result.snippet).toContain('#,##0%')
+        expect(result.snippet).toContain('percentFormat')
         expect(result.snippet).not.toContain('EEEE')
       })
 
@@ -121,6 +121,139 @@ describe('XML Fetcher Utilities', () => {
         // The critical test: decimal search should NOT return date pattern
         expect(result.snippet).not.toContain('EEEE')
         expect(result.snippet).toContain('#,##0.###')
+      })
+    })
+
+    describe('Multiple format types - different line numbers', () => {
+      // This is the critical regression test to ensure different format types
+      // don't all point to the same line (like they did in the bug)
+      const xmlWithAllFormats = `
+<ldml>
+  <numbers>
+    <decimalFormats numberSystem="latn">
+      <decimalFormatLength>
+        <decimalFormat>
+          <pattern>#,##0.###</pattern>
+        </decimalFormat>
+      </decimalFormatLength>
+    </decimalFormats>
+    <percentFormats numberSystem="latn">
+      <percentFormatLength>
+        <percentFormat>
+          <pattern>#,##0%</pattern>
+        </percentFormat>
+      </percentFormatLength>
+    </percentFormats>
+    <currencyFormats numberSystem="latn">
+      <currencyFormatLength>
+        <currencyFormat type="standard">
+          <pattern>¤#,##0.00</pattern>
+        </currencyFormat>
+      </currencyFormatLength>
+    </currencyFormats>
+    <scientificFormats numberSystem="latn">
+      <scientificFormatLength>
+        <scientificFormat>
+          <pattern>#E0</pattern>
+        </scientificFormat>
+      </scientificFormatLength>
+    </scientificFormats>
+  </numbers>
+</ldml>
+      `.trim()
+
+      it('should find decimal format at correct line', () => {
+        const result = extractXmlSnippet(
+          xmlWithAllFormats,
+          "//ldml/numbers/decimalFormats[@numberSystem='latn']/decimalFormatLength/decimalFormat/pattern"
+        )
+
+        expect(result.lineNumber).toBeDefined()
+        expect(result.snippet).toContain('#,##0.###')
+        expect(result.snippet).not.toContain('#,##0%')
+        expect(result.snippet).not.toContain('¤')
+        expect(result.snippet).not.toContain('#E0')
+      })
+
+      it('should find percent format at correct line', () => {
+        const result = extractXmlSnippet(
+          xmlWithAllFormats,
+          "//ldml/numbers/percentFormats[@numberSystem='latn']/percentFormatLength/percentFormat/pattern"
+        )
+
+        expect(result.lineNumber).toBeDefined()
+        expect(result.snippet).toContain('#,##0%')
+        expect(result.snippet).not.toContain('#,##0.###')
+        expect(result.snippet).not.toContain('¤')
+        expect(result.snippet).not.toContain('#E0')
+      })
+
+      it('should find currency format at correct line', () => {
+        const result = extractXmlSnippet(
+          xmlWithAllFormats,
+          "//ldml/numbers/currencyFormats[@numberSystem='latn']/currencyFormatLength/currencyFormat/pattern"
+        )
+
+        expect(result.lineNumber).toBeDefined()
+        expect(result.snippet).toContain('¤#,##0.00')
+        expect(result.snippet).not.toContain('#,##0.###')
+        expect(result.snippet).not.toContain('#,##0%')
+        expect(result.snippet).not.toContain('#E0')
+      })
+
+      it('should find scientific format at correct line', () => {
+        const result = extractXmlSnippet(
+          xmlWithAllFormats,
+          "//ldml/numbers/scientificFormats[@numberSystem='latn']/scientificFormatLength/scientificFormat/pattern"
+        )
+
+        expect(result.lineNumber).toBeDefined()
+        expect(result.snippet).toContain('#E0')
+        expect(result.snippet).not.toContain('#,##0.###')
+        expect(result.snippet).not.toContain('#,##0%')
+        expect(result.snippet).not.toContain('¤')
+      })
+
+      it('should return DIFFERENT line numbers for each format type', () => {
+        const decimal = extractXmlSnippet(
+          xmlWithAllFormats,
+          "//ldml/numbers/decimalFormats[@numberSystem='latn']/decimalFormatLength/decimalFormat/pattern"
+        )
+        const percent = extractXmlSnippet(
+          xmlWithAllFormats,
+          "//ldml/numbers/percentFormats[@numberSystem='latn']/percentFormatLength/percentFormat/pattern"
+        )
+        const currency = extractXmlSnippet(
+          xmlWithAllFormats,
+          "//ldml/numbers/currencyFormats[@numberSystem='latn']/currencyFormatLength/currencyFormat/pattern"
+        )
+        const scientific = extractXmlSnippet(
+          xmlWithAllFormats,
+          "//ldml/numbers/scientificFormats[@numberSystem='latn']/scientificFormatLength/scientificFormat/pattern"
+        )
+
+        // All line numbers should be defined
+        expect(decimal.lineNumber).toBeDefined()
+        expect(percent.lineNumber).toBeDefined()
+        expect(currency.lineNumber).toBeDefined()
+        expect(scientific.lineNumber).toBeDefined()
+
+        // All line numbers should be DIFFERENT
+        const lineNumbers = [
+          decimal.lineNumber,
+          percent.lineNumber,
+          currency.lineNumber,
+          scientific.lineNumber,
+        ]
+        const uniqueLineNumbers = new Set(lineNumbers)
+
+        // This is the critical assertion - all 4 should be unique
+        expect(uniqueLineNumbers.size).toBe(4)
+
+        // Also verify they're in order (decimal < percent < currency < scientific)
+        expect(decimal.lineNumber).toBeLessThan(percent.lineNumber!)
+        expect(percent.lineNumber).toBeLessThan(currency.lineNumber!)
+        expect(currency.lineNumber).toBeLessThan(scientific.lineNumber!)
       })
     })
 

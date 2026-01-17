@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Number Format Pattern Extraction** (2026-01-17)
+  - Issue: All format types (decimal, percent, currency, scientific) pointed to the same XML line (decimal pattern)
+  - Root cause: XML extraction algorithm stopped narrowing scope after finding first parent match
+  - Fix: Updated extraction algorithm to continue narrowing through ALL parent levels
+  - Algorithm now:
+    1. Includes all XPath elements (not just first few)
+    2. Progressively narrows scope through each parent level
+    3. Finds target element only within fully narrowed context
+  - Impact: Each format type now correctly points to its unique pattern element
+  - Test coverage: Added 5 regression tests to verify all format types return different line numbers
+
 ### Added
 - Initial project setup with Vite 6, React 18, and TypeScript 5
 - Tailwind CSS 3 with custom theme for styling
@@ -48,9 +60,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Testing Infrastructure
 - Vitest test runner with jsdom environment
-- 57 comprehensive unit tests across 3 test suites
+- 62 comprehensive unit tests across 3 test suites
 - Test coverage for:
-  - XML snippet extraction (17 tests)
+  - XML snippet extraction (22 tests)
   - JSON-to-XPath mapping (23 tests)
   - Locale normalization (17 tests)
 - Test scripts: `test`, `test:run`, `test:coverage`, `test:ui`

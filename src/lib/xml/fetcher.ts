@@ -84,7 +84,7 @@ export function extractXmlSnippet(
   let searchStartLine = 0
   let searchEndLine = lines.length
 
-  // Extract distinguishing parts from the path (elements with attributes or unique parents)
+  // Extract ALL elements from the path to ensure precise matching
   const keyElements: Array<{ element: string; attr?: { name: string; value: string } }> = []
 
   for (const part of pathParts) {
@@ -96,13 +96,14 @@ export function extractXmlSnippet(
         element,
         attr: { name: attrMatch[1], value: attrMatch[2] }
       })
-    } else if (keyElements.length === 0 || pathParts.indexOf(part) < 2) {
-      // Include first few elements to establish context
+    } else {
+      // Include all elements to establish full context path
       keyElements.push({ element })
     }
   }
 
-  // Search for the most specific parent element first
+  // Search for parent elements from most specific to least specific
+  // This progressively narrows the search scope
   for (let i = keyElements.length - 2; i >= 0; i--) {
     const key = keyElements[i]
     const foundIndex = lines.findIndex((line, idx) => {
@@ -126,7 +127,7 @@ export function extractXmlSnippet(
       if (endIndex !== -1) {
         searchEndLine = endIndex + 1
       }
-      break
+      // Don't break - continue narrowing through all parent levels
     }
   }
 
@@ -202,7 +203,7 @@ export function formatXml(xml: string): string {
 
     formatted += tab.repeat(indent) + '<' + node + '>\n'
 
-    if (node.match(/^<?\w[^>]*[^\/]$/) && !node.startsWith('?')) {
+    if (node.match(/^<?\w[^>]*[^/]$/) && !node.startsWith('?')) {
       indent++ // Opening tag
     }
   })

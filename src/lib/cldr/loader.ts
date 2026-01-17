@@ -35,7 +35,7 @@ export async function loadNumberData(locale: LocaleCode): Promise<CldrData> {
   const cacheKey = `numbers-${normalizedLocale}`
 
   if (!cldrCache.has(cacheKey)) {
-    const data = (localeData.numbers as any)[normalizedLocale]
+    const data = (localeData.numbers as unknown as Record<string, CldrData>)[normalizedLocale]
 
     if (!data) {
       throw new Error(`CLDR number data not found for locale: ${normalizedLocale}. Available locales: ${Object.keys(localeData.numbers).join(', ')}`)
@@ -56,7 +56,7 @@ export async function loadDateData(locale: LocaleCode): Promise<CldrData> {
   const cacheKey = `dates-${normalizedLocale}`
 
   if (!cldrCache.has(cacheKey)) {
-    const data = (localeData.dates as any)[normalizedLocale]
+    const data = (localeData.dates as unknown as Record<string, CldrData>)[normalizedLocale]
 
     if (!data) {
       throw new Error(`CLDR date data not found for locale: ${normalizedLocale}`)
@@ -77,7 +77,7 @@ export async function loadLocaleDisplayNames(locale: LocaleCode): Promise<CldrDa
   const cacheKey = `localenames-${normalizedLocale}`
 
   if (!cldrCache.has(cacheKey)) {
-    const data = (localeData.localeNames as any)[normalizedLocale]
+    const data = (localeData.localeNames as unknown as Record<string, CldrData>)[normalizedLocale]
 
     if (!data) {
       throw new Error(`CLDR locale names not found for locale: ${normalizedLocale}`)
@@ -98,7 +98,7 @@ export async function loadCurrencyData(locale: LocaleCode): Promise<CldrData> {
   const cacheKey = `currencies-${normalizedLocale}`
 
   if (!cldrCache.has(cacheKey)) {
-    const data = (localeData.currencies as any)[normalizedLocale]
+    const data = (localeData.currencies as unknown as Record<string, CldrData>)[normalizedLocale]
 
     if (!data) {
       throw new Error(`CLDR currency data not found for locale: ${normalizedLocale}`)
@@ -117,13 +117,17 @@ export async function loadCurrencyData(locale: LocaleCode): Promise<CldrData> {
  */
 export function getCldrValue(data: unknown, path: string): unknown {
   const parts = path.split('.')
-  let current: any = data
+  let current: unknown = data
 
   for (const part of parts) {
     if (current === null || current === undefined) {
       return undefined
     }
-    current = current[part]
+    if (typeof current === 'object' && current !== null) {
+      current = (current as Record<string, unknown>)[part]
+    } else {
+      return undefined
+    }
   }
 
   return current
@@ -136,8 +140,9 @@ export async function getAvailableLocales(): Promise<string[]> {
   const cacheKey = 'available-locales'
 
   if (!cldrCache.has(cacheKey)) {
+    const availableLocalesData = localeData.core.availableLocales as Record<string, Record<string, string[]>>
     const loadPromise = Promise.resolve(
-      (localeData.core.availableLocales as any).availableLocales.full as string[]
+      availableLocalesData.availableLocales.full as string[]
     )
 
     cldrCache.set(cacheKey, loadPromise)

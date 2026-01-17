@@ -148,7 +148,7 @@ export function resolveXPath(
  * Example: data.main.en.numbers.symbols -> "main.en.numbers.symbols"
  */
 export function extractJsonPath(obj: unknown, targetValue: unknown): string | null {
-  function search(current: any, path: string[] = []): string | null {
+  function search(current: unknown, path: string[] = []): string | null {
     if (current === targetValue) {
       return path.join('.')
     }

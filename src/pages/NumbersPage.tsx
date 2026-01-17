@@ -135,7 +135,7 @@ export default function NumbersPage() {
                 </label>
                 <SourceBadge
                   jsonPath={buildJsonPath(
-                    selectedLocale,
+                    normalizedLocale,
                     'numbers',
                     'symbols-numberSystem-latn',
                     'group'
@@ -155,7 +155,7 @@ export default function NumbersPage() {
                 </label>
                 <SourceBadge
                   jsonPath={buildJsonPath(
-                    selectedLocale,
+                    normalizedLocale,
                     'numbers',
                     'symbols-numberSystem-latn',
                     'percentSign'
@@ -175,7 +175,7 @@ export default function NumbersPage() {
                 </label>
                 <SourceBadge
                   jsonPath={buildJsonPath(
-                    selectedLocale,
+                    normalizedLocale,
                     'numbers',
                     'symbols-numberSystem-latn',
                     'plusSign'
@@ -195,7 +195,7 @@ export default function NumbersPage() {
                 </label>
                 <SourceBadge
                   jsonPath={buildJsonPath(
-                    selectedLocale,
+                    normalizedLocale,
                     'numbers',
                     'symbols-numberSystem-latn',
                     'minusSign'
@@ -215,7 +215,7 @@ export default function NumbersPage() {
                 </label>
                 <SourceBadge
                   jsonPath={buildJsonPath(
-                    selectedLocale,
+                    normalizedLocale,
                     'numbers',
                     'symbols-numberSystem-latn',
                     'exponential'
@@ -241,7 +241,7 @@ export default function NumbersPage() {
                 </label>
                 <SourceBadge
                   jsonPath={buildJsonPath(
-                    selectedLocale,
+                    normalizedLocale,
                     'numbers',
                     'decimalFormats-numberSystem-latn',
                     'standard'
@@ -266,7 +266,7 @@ export default function NumbersPage() {
                 </label>
                 <SourceBadge
                   jsonPath={buildJsonPath(
-                    selectedLocale,
+                    normalizedLocale,
                     'numbers',
                     'percentFormats-numberSystem-latn',
                     'standard'
@@ -291,7 +291,7 @@ export default function NumbersPage() {
                 </label>
                 <SourceBadge
                   jsonPath={buildJsonPath(
-                    selectedLocale,
+                    normalizedLocale,
                     'numbers',
                     'currencyFormats-numberSystem-latn',
                     'standard'
@@ -316,7 +316,7 @@ export default function NumbersPage() {
                 </label>
                 <SourceBadge
                   jsonPath={buildJsonPath(
-                    selectedLocale,
+                    normalizedLocale,
                     'numbers',
                     'scientificFormats-numberSystem-latn',
                     'standard'
@@ -400,7 +400,7 @@ export default function NumbersPage() {
             </div>
             <SourceBadge
               jsonPath={buildJsonPath(
-                selectedLocale,
+                normalizedLocale,
                 'numbers',
                 'defaultNumberingSystem'
               )}
