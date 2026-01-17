@@ -205,7 +205,7 @@ When contributing:
 3. Follow the existing code style
 4. Ensure all tests pass: `npm test -- --run`
 
-See [Docs/](./Docs/) for detailed documentation.
+See [Docs/](./Docs/) for detailed documentation, including [PROJECT-STATUS.md](./Docs/PROJECT-STATUS.md) for current progress and roadmap.
 
 ## License
 

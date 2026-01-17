@@ -4,6 +4,15 @@ This folder contains all project documentation.
 
 ## Documentation Files
 
+### Project Management
+
+- **[PROJECT-STATUS.md](./PROJECT-STATUS.md)** - Current project status and roadmap
+  - What's completed (Phase 1 MVP)
+  - What's planned (Phase 2 & 3)
+  - Current metrics and bugs
+  - Release planning
+  - Next immediate steps
+
 ### Testing Documentation
 
 - **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** - Comprehensive guide to testing
