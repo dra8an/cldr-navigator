@@ -1,8 +1,8 @@
 # CLDR Navigator - Project Status
 
-**Last Updated:** 2026-01-17
+**Last Updated:** 2026-01-18
 **Current Version:** 0.0.1
-**Status:** Phase 2 In Progress - Dates & Times ✅ | Currency ✅
+**Status:** Phase 2 In Progress - Dates & Times ✅ | Currency ✅ | Locale Names ✅
 
 ---
 
@@ -101,9 +101,9 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 
 ### Metrics
 
-- **Bundle Size:** 292.66KB gzipped ✅ (target: < 300KB)
-- **Build Time:** ~2.2s ✅
-- **Test Coverage:** 107 tests, all passing ✅
+- **Bundle Size:** 362.79KB gzipped ⚠️ (exceeds 300KB target due to complete locale names data)
+- **Build Time:** ~1.7s ✅
+- **Test Coverage:** 117 tests, all passing ✅
 - **Supported Locales:** 14 common locales ✅
 - **Performance:** TanStack Query 24-hour cache ✅
 - **Native Intl:** Zero external formatter dependencies ✅
@@ -190,24 +190,44 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 - Search functionality filters by code, name, or symbol
 - Bundle size increased by only 1.83 KB gzipped (from 290.83KB to 292.66KB)
 
-#### Locale Names Demo 🌍
-**Estimated Effort:** 1-2 days
+#### Locale Names Demo 🌍 ✅ COMPLETE
+**Actual Effort:** 1 day
+**Status:** Fully implemented with comprehensive data loading
 
-- [ ] Language display names
-- [ ] Territory/region names
-- [ ] Script names
-- [ ] Variant names
-- [ ] Translations across locales
-- [ ] Search/filter functionality
-- [ ] Source links for locale names
+**Implemented Features:**
+- [x] **700+ language names** with regional variants (e.g., "American English", "British English")
+- [x] **325+ territory names** (countries, regions, supranational areas)
+- [x] **220+ script names** (writing systems: Latin, Cyrillic, Arabic, etc.)
+- [x] **60+ variant names** (orthographies, romanization systems like Pinyin, FONIPA)
+- [x] Real-time search filtering for languages, territories, and scripts
+- [x] **4-tab navigation:** Overview, Languages, Territories, Scripts & Variants
+- [x] Full SourceBadge integration for all locale name entries
+- [x] Responsive grid layouts
+- [x] Tab counts showing total items per category
+- [x] Source links for all locale names categories
 
-**Implementation Tasks:**
-- [ ] Create `src/pages/LocaleNamesPage.tsx`
-- [ ] Add `useLocaleDisplayNames` hook
-- [ ] Add locale names XPath mappings
-- [ ] Create searchable list component
-- [ ] Add route to router
-- [ ] Write tests for locale names
+**Implementation Details:**
+- [x] Created `src/pages/LocaleNamesPage.tsx` with tabbed navigation
+- [x] `useLocaleNames` hook already existed in `useCldrData.ts`
+- [x] Enhanced `transformJsonPathToXPath()` for dynamic locale names mapping
+- [x] Added 10 comprehensive tests for locale names XPath generation
+- [x] Updated `CldrLocaleDisplayNames` type interface to match actual structure
+- [x] Added imports for territories, scripts, variants JSON files (42 additional files)
+- [x] Created `mergeLocaleNames()` helper to combine separate CLDR files
+- [x] Added route `/locale-names` to router
+- [x] Updated sidebar navigation (enabled Locale Names)
+
+**Key Technical Achievement:**
+- Dynamic XPath generation for all locale name categories without precomputed mappings
+- Pattern: `localeDisplayNames.<category>.<code>` → `<category>/<element>[@type='<code>']`
+- Handles alternate forms with `-alt-*` suffixes automatically
+- Proper element name mapping (territories → territory, scripts → script, etc.)
+
+**Bundle Size Impact:**
+- **+68.75 KB gzipped** (from 294.04KB to 362.79KB)
+- Caused by loading complete locale names data (languages, territories, scripts, variants)
+- 42 additional JSON file imports across 14 locales
+- Trade-off accepted for complete data coverage
 
 ### Priority 2: Enhanced Features
 
@@ -344,6 +364,11 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 ## Technical Debt & Improvements
 
 ### High Priority
+- [ ] **Optimize bundle size** - Currently 362.79KB gzipped (exceeds 300KB target)
+  - Implement code splitting for demo pages
+  - Consider lazy loading for locale names data
+  - Investigate dynamic imports for less common locales
+  - Target: Reduce to under 300KB gzipped
 - [ ] Add integration tests with Playwright
 - [ ] Improve TypeScript types for CLDR data structures
 - [ ] Add error tracking (Sentry or similar)
@@ -370,8 +395,11 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 ### Current Limitations
 1. **Limited Locale Support** - Only 14 common locales (out of 500+ in CLDR)
    - Future: Add dynamic import support for all locales
-2. **Bundle Size** - 290.83KB gzipped (within target but could be smaller)
-   - Future: Implement code splitting per demo page
+2. **Bundle Size Exceeds Target** - 362.79KB gzipped (exceeds 300KB target by 21%)
+   - Caused by complete locale names data for all 14 locales
+   - Includes 700+ languages, 325+ territories, 220+ scripts, 60+ variants
+   - Trade-off: Complete data coverage vs bundle size
+   - Future: Implement code splitting, lazy loading, or on-demand data fetching
 3. **Calendar Support** - Dates demo only supports Gregorian calendar
    - CLDR includes Chinese, Hebrew, Islamic, and other calendars
    - Future: Add calendar selector UI
@@ -501,6 +529,7 @@ When working on new features:
 1. ✅ Complete Phase 1 MVP (DONE)
 2. ✅ Implement Dates & Times demo with native formatter (DONE)
 3. ✅ Implement Currency demo with searchable list (DONE)
-4. 🎯 Implement Locale Names demo (Next Priority)
-5. 🧪 Set up integration testing with Playwright
-6. 🚀 Deploy to production (Vercel)
+4. ✅ Implement Locale Names demo (DONE)
+5. 🎯 Optimize bundle size (code splitting, lazy loading)
+6. 🧪 Set up integration testing with Playwright
+7. 🚀 Deploy to production (Vercel)

@@ -387,4 +387,80 @@ describe('Mapping Resolver', () => {
       expect(result.xmlFile).toBe('common/main/ja.xml')
     })
   })
+
+  describe('Locale Display Names XPath Mappings', () => {
+    it('should resolve language name paths', () => {
+      const result = resolveXPath('localeDisplayNames.languages.en', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/localeDisplayNames/languages/language[@type='en']"
+      )
+    })
+
+    it('should resolve territory name paths', () => {
+      const result = resolveXPath('localeDisplayNames.territories.US', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/localeDisplayNames/territories/territory[@type='US']"
+      )
+    })
+
+    it('should resolve script name paths', () => {
+      const result = resolveXPath('localeDisplayNames.scripts.Latn', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/localeDisplayNames/scripts/script[@type='Latn']"
+      )
+    })
+
+    it('should resolve variant name paths', () => {
+      const result = resolveXPath('localeDisplayNames.variants.PINYIN', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/localeDisplayNames/variants/variant[@type='PINYIN']"
+      )
+    })
+
+    it('should resolve language names with alt attributes', () => {
+      const result = resolveXPath('localeDisplayNames.languages.en-GB-alt-short', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/localeDisplayNames/languages/language[@type='en-GB'][@alt='short']"
+      )
+    })
+
+    it('should resolve territory names with alt attributes', () => {
+      const result = resolveXPath('localeDisplayNames.territories.US-alt-short', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/localeDisplayNames/territories/territory[@type='US'][@alt='short']"
+      )
+    })
+
+    it('should resolve script names with alt attributes', () => {
+      const result = resolveXPath('localeDisplayNames.scripts.Hans-alt-stand-alone', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/localeDisplayNames/scripts/script[@type='Hans'][@alt='stand-alone']"
+      )
+    })
+
+    it('should resolve paths for different language codes', () => {
+      const languages = ['en', 'fr', 'de', 'ja', 'zh', 'ar']
+      languages.forEach(code => {
+        const result = resolveXPath(`localeDisplayNames.languages.${code}`, 'en')
+        expect(result.xpath).toBe(
+          `//ldml/localeDisplayNames/languages/language[@type='${code}']`
+        )
+      })
+    })
+
+    it('should work with main.locale prefix', () => {
+      const result = resolveXPath('main.en.localeDisplayNames.languages.fr', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/localeDisplayNames/languages/language[@type='fr']"
+      )
+    })
+
+    it('should work with different locales', () => {
+      const result = resolveXPath('localeDisplayNames.territories.JP', 'ja')
+      expect(result.xpath).toBe(
+        "//ldml/localeDisplayNames/territories/territory[@type='JP']"
+      )
+      expect(result.xmlFile).toBe('common/main/ja.xml')
+    })
+  })
 })

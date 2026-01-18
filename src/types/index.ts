@@ -159,10 +159,21 @@ export interface CldrDates {
 }
 
 export interface CldrLocaleDisplayNames {
-  localeDisplayNames?: {
-    languages?: { [code: string]: string }
-    territories?: { [code: string]: string }
-    scripts?: { [code: string]: string }
+  languages?: { [code: string]: string }
+  territories?: { [code: string]: string }
+  scripts?: { [code: string]: string }
+  variants?: { [code: string]: string }
+  localeDisplayPattern?: {
+    localePattern?: string
+    localeSeparator?: string
+    localeKeyTypePattern?: string
+  }
+  keys?: { [key: string]: string }
+  types?: { [category: string]: { [type: string]: string } }
+  codePatterns?: {
+    language?: string
+    script?: string
+    territory?: string
   }
 }
 

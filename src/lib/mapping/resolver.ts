@@ -357,6 +357,38 @@ function transformJsonPathToXPath(jsonPath: string): string {
     return `//ldml/${xpathBefore}/currency[@type='${currencyCode}']`
   }
 
+  // Special handling for locale display names (languages, territories, scripts, variants)
+  const localeDisplayNamesIdx = segments.indexOf('localeDisplayNames')
+  if (localeDisplayNamesIdx !== -1 && segments.length > localeDisplayNamesIdx + 1) {
+    const category = segments[localeDisplayNamesIdx + 1]
+
+    // Check if this is one of the categories that uses element with type attribute
+    const categoryToElement: Record<string, string> = {
+      'languages': 'language',
+      'territories': 'territory',
+      'scripts': 'script',
+      'variants': 'variant',
+    }
+
+    const elementName = categoryToElement[category]
+
+    if (elementName && segments.length > localeDisplayNamesIdx + 2) {
+      // Path is like: localeDisplayNames.languages.en-GB-alt-short
+      // Should become: //ldml/localeDisplayNames/languages/language[@type='en-GB'][@alt='short']
+      const code = segments[localeDisplayNamesIdx + 2]
+
+      // Extract alt attribute if present (e.g., "en-GB-alt-short" -> type="en-GB" alt="short")
+      const altMatch = code.match(/^(.+?)-alt-(.+)$/)
+
+      if (altMatch) {
+        const [, typeValue, altValue] = altMatch
+        return `//ldml/localeDisplayNames/${category}/${elementName}[@type='${typeValue}'][@alt='${altValue}']`
+      }
+
+      return `//ldml/localeDisplayNames/${category}/${elementName}[@type='${code}']`
+    }
+  }
+
   // Default transformation
   const xpathSegments = segments.map((seg, idx) =>
     convertSegmentWithContext(seg, idx > 0 ? segments[idx - 1] : undefined)

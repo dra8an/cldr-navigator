@@ -38,6 +38,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All 107 tests passing (up from 99)
   - Files: `src/lib/mapping/__tests__/resolver.test.ts`
 
+- **Locale Names Demo Page** (2026-01-18)
+  - Comprehensive locale display names demo at `/locale-names`
+  - Four-tab navigation: Overview, Languages, Territories, Scripts & Variants
+  - **700+ language names** with regional variants (e.g., "American English", "British English")
+  - **325+ territory names** (countries, regions, supranational areas)
+  - **220+ script names** (writing systems: Latin, Cyrillic, Arabic, etc.)
+  - **60+ variant names** (orthographies, romanization systems like Pinyin, FONIPA)
+  - Real-time search filtering for languages, territories, and scripts
+  - Full SourceBadge integration for all locale name entries
+  - Responsive grid layouts (1-3 columns based on screen size)
+  - Tab counts showing total items per category
+  - Files: `src/pages/LocaleNamesPage.tsx`
+
+- **Dynamic Locale Names XPath Mapping** (2026-01-18)
+  - Enhanced `transformJsonPathToXPath()` to handle locale display names paths dynamically
+  - Pattern: `localeDisplayNames.<category>.<code>` → `//ldml/localeDisplayNames/<category>/<element>[@type='<code>']`
+  - Supports languages: `localeDisplayNames.languages.en` → `languages/language[@type='en']`
+  - Supports territories: `localeDisplayNames.territories.US` → `territories/territory[@type='US']`
+  - Supports scripts: `localeDisplayNames.scripts.Latn` → `scripts/script[@type='Latn']`
+  - Supports variants: `localeDisplayNames.variants.PINYIN` → `variants/variant[@type='PINYIN']`
+  - Handles alternate forms with `-alt-*` suffixes (e.g., `en-GB-alt-short`)
+  - Proper element name mapping (territories → territory, scripts → script, etc.)
+  - Files: `src/lib/mapping/resolver.ts`
+
+- **Locale Names XPath Mapping Tests** (2026-01-18)
+  - 10 new comprehensive tests for locale names XPath generation
+  - Tests cover all four categories: languages, territories, scripts, variants
+  - Verifies alternate form handling with `-alt-*` suffixes
+  - Tests multiple language/territory codes for consistency
+  - All 117 tests passing (up from 107)
+  - Files: `src/lib/mapping/__tests__/resolver.test.ts`
+
+- **Complete Locale Names Data Loading** (2026-01-18)
+  - Added imports for territories, scripts, and variants JSON files (42 additional imports)
+  - Created `mergeLocaleNames()` helper to combine separate CLDR files
+  - Each locale now loads 4 files: languages.json, territories.json, scripts.json, variants.json
+  - Applies to all 14 supported locales (en, de, fr, es, it, ja, zh-Hans, ko, ar, ru, pt, hi, tr, pl)
+  - Files: `src/lib/cldr/locale-data.ts`
+
+- **Updated Type Definitions for Locale Names** (2026-01-18)
+  - Fixed `CldrLocaleDisplayNames` interface to match actual CLDR structure
+  - Added support for `languages`, `territories`, `scripts`, `variants` properties
+  - Added `localeDisplayPattern`, `keys`, `types`, and `codePatterns` metadata
+  - Removed incorrect nested `localeDisplayNames` wrapper
+  - Files: `src/types/index.ts`
+
 - **Native CLDR Skeleton Pattern Formatter** (2026-01-17)
   - Implemented lightweight skeleton pattern parser using native `Intl.DateTimeFormat`
   - **Full support for flexible day periods (field 'B')** via `dayPeriod: 'long'` option
@@ -188,6 +234,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Source buttons on every data point
   - 4-tab navigation structure
 
+- **Locale Names Demo** (Phase 2)
+  - 700+ language names with regional variants
+  - 325+ territory names (countries and regions)
+  - 220+ script names (writing systems)
+  - 60+ variant names (orthographies and romanization)
+  - Real-time search filtering
+  - Source buttons on every data point
+  - 4-tab navigation structure
+
 #### UI Components
 - Responsive layout with header, sidebar, and footer
 - Locale selector with 15 common locales and recent history
@@ -201,10 +256,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Testing Infrastructure
 - Vitest test runner with jsdom environment
-- 107 comprehensive unit tests across 4 test suites
+- 117 comprehensive unit tests across 4 test suites
 - Test coverage for:
   - XML snippet extraction (29 tests, including 7 calendar regression tests)
-  - JSON-to-XPath mapping (49 tests, including date/time and currency mappings)
+  - JSON-to-XPath mapping (59 tests, including date/time, currency, and locale names mappings)
   - Locale normalization (17 tests)
   - Skeleton formatter (12 tests, including unsupported pattern detection)
 - Test scripts: `test`, `test:run`, `test:coverage`, `test:ui`
@@ -258,10 +313,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Testing**: Vitest 2.1.8, Testing Library, jsdom
 
 #### Bundle Size
-- Production bundle: ~1.25MB (290.83KB gzipped)
-- Initial load: 290.83KB gzipped
-- Target met: < 300KB ✓ (plan specified < 300KB)
-- **32.5 KB reduction** from native implementation vs @formatjs approach
+- Production bundle: ~1.43MB (362.79KB gzipped)
+- Initial load: 362.79KB gzipped
+- Note: Exceeds original 300KB target due to complete locale names data (68.75KB increase)
+- Includes complete data for 700+ languages, 325+ territories, 220+ scripts, 60+ variants across 14 locales
+- Previous optimizations: **32.5 KB reduction** from native skeleton formatter vs @formatjs approach
 
 #### Performance
 - TanStack Query: 24-hour cache for CLDR data
@@ -281,10 +337,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Date/time demo only supports Gregorian calendar
   - CLDR includes Chinese, Hebrew, Islamic, and other calendars
   - Future: Add calendar selector UI
-- Locale names and plural rules demos not yet implemented
+- Plural rules demo not yet implemented
   - Planned for Phase 2
 - No comparison mode yet
   - Side-by-side locale comparison planned for Phase 2
+- **Bundle size exceeds 300KB target** (362.79KB gzipped)
+  - Caused by loading complete locale names data for all 14 locales (42 additional JSON files)
+  - Trade-off: Complete data coverage vs bundle size
+  - Future: Consider code splitting or lazy loading strategies
 - Some CLDR skeleton patterns not supported by native Intl
   - Quarter fields (Q, q) and Week fields (w, W) are filtered out
   - These require custom calendar calculations not provided by Intl
@@ -346,11 +406,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### [0.1.0] - Planned (Phase 2)
 - ✅ Dates & Times demo (Gregorian calendar)
 - ✅ Currency demo (300+ currencies)
+- ✅ Locale names demo (languages, territories, scripts, variants)
 - Calendar selector (Chinese, Hebrew, Islamic, etc.)
 - Available formats and interval formats for dates
-- Locale names demo
 - Comparison mode (side-by-side locales)
 - Enhanced XML viewer with syntax highlighting
+- Bundle size optimization (code splitting, lazy loading)
 
 ### [0.2.0] - Planned (Phase 3)
 - Data Explorer with tree view

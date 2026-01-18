@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage'
 import NumbersPage from './pages/NumbersPage'
 import DatesPage from './pages/DatesPage'
 import CurrencyPage from './pages/CurrencyPage'
+import LocaleNamesPage from './pages/LocaleNamesPage'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="numbers" element={<NumbersPage />} />
           <Route path="dates" element={<DatesPage />} />
           <Route path="currency" element={<CurrencyPage />} />
+          <Route path="locale-names" element={<LocaleNamesPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
