@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Loader2, AlertCircle } from 'lucide-react'
+import { Loader2, AlertCircle, Copy, Check } from 'lucide-react'
 import { useLocaleStore } from '@/store/localeStore'
 import { useDateData } from '@/hooks/useCldrData'
 import { buildJsonPath } from '@/lib/mapping/resolver'
@@ -19,6 +19,9 @@ export default function DatesPage() {
     return end
   })
   const [activeTab, setActiveTab] = useState<TabType>('overview')
+  const [copiedOverview, setCopiedOverview] = useState(false)
+  const [copiedAvailable, setCopiedAvailable] = useState(false)
+  const [copiedInterval, setCopiedInterval] = useState(false)
 
   // Get the normalized locale for accessing CLDR data
   const normalizedLocale = normalizeLocaleForCldr(selectedLocale)
@@ -86,6 +89,25 @@ export default function DatesPage() {
     const hours = String(date.getHours()).padStart(2, '0')
     const minutes = String(date.getMinutes()).padStart(2, '0')
     return `${year}-${month}-${day}T${hours}:${minutes}`
+  }
+
+  // Copy code to clipboard
+  const copyToClipboard = async (text: string, type: 'overview' | 'available' | 'interval') => {
+    try {
+      await navigator.clipboard.writeText(text)
+      if (type === 'overview') {
+        setCopiedOverview(true)
+        setTimeout(() => setCopiedOverview(false), 2000)
+      } else if (type === 'available') {
+        setCopiedAvailable(true)
+        setTimeout(() => setCopiedAvailable(false), 2000)
+      } else {
+        setCopiedInterval(true)
+        setTimeout(() => setCopiedInterval(false), 2000)
+      }
+    } catch {
+      // Silently fail if clipboard API is not available
+    }
   }
 
   return (
@@ -488,6 +510,56 @@ export default function DatesPage() {
               </div>
             </div>
           </div>
+
+          {/* Using with JavaScript */}
+          <div className="bg-card border rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Using with JavaScript</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              You can use the native <code className="px-1 py-0.5 bg-muted rounded text-xs">Intl.DateTimeFormat</code> API to format dates and times in your code:
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <div className="text-xs font-medium text-muted-foreground mb-2">
+                  Date & Time Formatting Example:
+                </div>
+                <div className="relative">
+                  <div className="font-mono text-sm bg-slate-950 text-green-400 px-4 py-3 rounded-lg border border-slate-800 overflow-x-auto">
+                    <pre className="whitespace-pre">{`const date = new Date()
+
+// Full date
+const fullDateFormatter = new Intl.DateTimeFormat('${selectedLocale}', {
+  dateStyle: 'full'
+})
+console.log(fullDateFormatter.format(date))
+// Output: "${formatDate(customDate, { dateStyle: 'full' })}"
+
+// Medium date with short time
+const dateTimeFormatter = new Intl.DateTimeFormat('${selectedLocale}', {
+  dateStyle: 'medium',
+  timeStyle: 'short'
+})
+console.log(dateTimeFormatter.format(date))
+// Output: "${formatDate(customDate, { dateStyle: 'medium', timeStyle: 'short' })}"`}</pre>
+                  </div>
+                  <button
+                    onClick={() => copyToClipboard(
+                      `const date = new Date()\n\n// Full date\nconst fullDateFormatter = new Intl.DateTimeFormat('${selectedLocale}', {\n  dateStyle: 'full'\n})\nconsole.log(fullDateFormatter.format(date))\n// Output: "${formatDate(customDate, { dateStyle: 'full' })}"\n\n// Medium date with short time\nconst dateTimeFormatter = new Intl.DateTimeFormat('${selectedLocale}', {\n  dateStyle: 'medium',\n  timeStyle: 'short'\n})\nconsole.log(dateTimeFormatter.format(date))\n// Output: "${formatDate(customDate, { dateStyle: 'medium', timeStyle: 'short' })}"`,
+                      'overview'
+                    )}
+                    className="absolute top-2 right-2 p-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                    title="Copy to clipboard"
+                  >
+                    {copiedOverview ? (
+                      <Check className="w-4 h-4 text-green-400" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -832,6 +904,59 @@ export default function DatesPage() {
               </div>
             </div>
           </div>
+
+          {/* Using with JavaScript */}
+          <div className="bg-card border rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Using with JavaScript</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              You can use the native <code className="px-1 py-0.5 bg-muted rounded text-xs">Intl.DateTimeFormat</code> API with specific options to achieve similar results:
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <div className="text-xs font-medium text-muted-foreground mb-2">
+                  Custom Format Example:
+                </div>
+                <div className="relative">
+                  <div className="font-mono text-sm bg-slate-950 text-green-400 px-4 py-3 rounded-lg border border-slate-800 overflow-x-auto">
+                    <pre className="whitespace-pre">{`const date = new Date()
+
+// Year and month (like skeleton "yMMMM")
+const formatter1 = new Intl.DateTimeFormat('${selectedLocale}', {
+  year: 'numeric',
+  month: 'long'
+})
+console.log(formatter1.format(date))
+// Output: "${formatDate(customDate, { year: 'numeric', month: 'long' })}"
+
+// Full date with weekday (like skeleton "yMMMMEEEEd")
+const formatter2 = new Intl.DateTimeFormat('${selectedLocale}', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  weekday: 'long'
+})
+console.log(formatter2.format(date))
+// Output: "${formatDate(customDate, { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}"`}</pre>
+                  </div>
+                  <button
+                    onClick={() => copyToClipboard(
+                      `const date = new Date()\n\n// Year and month (like skeleton "yMMMM")\nconst formatter1 = new Intl.DateTimeFormat('${selectedLocale}', {\n  year: 'numeric',\n  month: 'long'\n})\nconsole.log(formatter1.format(date))\n// Output: "${formatDate(customDate, { year: 'numeric', month: 'long' })}"\n\n// Full date with weekday (like skeleton "yMMMMEEEEd")\nconst formatter2 = new Intl.DateTimeFormat('${selectedLocale}', {\n  year: 'numeric',\n  month: 'long',\n  day: 'numeric',\n  weekday: 'long'\n})\nconsole.log(formatter2.format(date))\n// Output: "${formatDate(customDate, { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}"`,
+                      'available'
+                    )}
+                    className="absolute top-2 right-2 p-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                    title="Copy to clipboard"
+                  >
+                    {copiedAvailable ? (
+                      <Check className="w-4 h-4 text-green-400" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -903,31 +1028,31 @@ export default function DatesPage() {
                           </div>
                         )
                       } else if (typeof value === 'object' && value !== null) {
+                        // Get unique patterns
+                        const patterns = [...new Set(Object.values(value))]
                         return (
-                          <div key={formatId} className="p-4 bg-muted rounded col-span-full">
-                            <div className="text-sm font-medium text-muted-foreground font-mono mb-3">
-                              {formatId}
+                          <div key={formatId} className="p-4 bg-muted rounded">
+                            <div className="flex items-center justify-between mb-2">
+                              <label className="text-sm font-medium text-muted-foreground font-mono">
+                                {formatId}
+                              </label>
+                              <SourceBadge
+                                jsonPath={buildJsonPath(
+                                  normalizedLocale,
+                                  'dates',
+                                  'calendars',
+                                  'gregorian',
+                                  'dateTimeFormats',
+                                  'intervalFormats',
+                                  formatId
+                                )}
+                                locale={normalizedLocale}
+                              />
                             </div>
-                            <div className="grid md:grid-cols-2 gap-3">
-                              {Object.entries(value).map(([diff, pattern]) => (
-                                <div key={diff} className="p-3 bg-background rounded">
-                                  <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs text-muted-foreground">{diff}</span>
-                                    <SourceBadge
-                                      jsonPath={buildJsonPath(
-                                        normalizedLocale,
-                                        'dates',
-                                        'calendars',
-                                        'gregorian',
-                                        'dateTimeFormats',
-                                        'intervalFormats',
-                                        formatId,
-                                        diff
-                                      )}
-                                      locale={normalizedLocale}
-                                    />
-                                  </div>
-                                  <div className="font-mono text-sm">{pattern}</div>
+                            <div className="space-y-1">
+                              {patterns.map((pattern, idx) => (
+                                <div key={idx} className="font-mono text-sm">
+                                  {pattern}
                                 </div>
                               ))}
                             </div>
@@ -1035,6 +1160,59 @@ export default function DatesPage() {
                   <div className="font-mono text-sm">
                     {formatDate(customDate, { year: 'numeric', month: 'long' })} – {formatDate(intervalEndDate, { year: 'numeric', month: 'long' })}
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Using with JavaScript */}
+          <div className="bg-card border rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Using with JavaScript</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              You can format date ranges by formatting each date separately and joining them:
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <div className="text-xs font-medium text-muted-foreground mb-2">
+                  Date Range Formatting Example:
+                </div>
+                <div className="relative">
+                  <div className="font-mono text-sm bg-slate-950 text-green-400 px-4 py-3 rounded-lg border border-slate-800 overflow-x-auto">
+                    <pre className="whitespace-pre">{`const startDate = new Date()
+const endDate = new Date()
+endDate.setDate(endDate.getDate() + 7)
+
+// Format a date range
+const formatter = new Intl.DateTimeFormat('${selectedLocale}', {
+  dateStyle: 'medium'
+})
+const dateRange = \`\${formatter.format(startDate)} – \${formatter.format(endDate)}\`
+console.log(dateRange)
+// Output: "${formatDate(customDate, { dateStyle: 'medium' })} – ${formatDate(intervalEndDate, { dateStyle: 'medium' })}"
+
+// Time range
+const timeFormatter = new Intl.DateTimeFormat('${selectedLocale}', {
+  timeStyle: 'short'
+})
+const timeRange = \`\${timeFormatter.format(startDate)} – \${timeFormatter.format(endDate)}\`
+console.log(timeRange)
+// Output: "${formatDate(customDate, { timeStyle: 'short' })} – ${formatDate(intervalEndDate, { timeStyle: 'short' })}"`}</pre>
+                  </div>
+                  <button
+                    onClick={() => copyToClipboard(
+                      `const startDate = new Date()\nconst endDate = new Date()\nendDate.setDate(endDate.getDate() + 7)\n\n// Format a date range\nconst formatter = new Intl.DateTimeFormat('${selectedLocale}', {\n  dateStyle: 'medium'\n})\nconst dateRange = \`\${formatter.format(startDate)} – \${formatter.format(endDate)}\`\nconsole.log(dateRange)\n// Output: "${formatDate(customDate, { dateStyle: 'medium' })} – ${formatDate(intervalEndDate, { dateStyle: 'medium' })}"\n\n// Time range\nconst timeFormatter = new Intl.DateTimeFormat('${selectedLocale}', {\n  timeStyle: 'short'\n})\nconst timeRange = \`\${timeFormatter.format(startDate)} – \${timeFormatter.format(endDate)}\`\nconsole.log(timeRange)\n// Output: "${formatDate(customDate, { timeStyle: 'short' })} – ${formatDate(intervalEndDate, { timeStyle: 'short' })}"`,
+                      'interval'
+                    )}
+                    className="absolute top-2 right-2 p-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                    title="Copy to clipboard"
+                  >
+                    {copiedInterval ? (
+                      <Check className="w-4 h-4 text-green-400" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </button>
                 </div>
               </div>
             </div>

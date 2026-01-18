@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Loader2, AlertCircle } from 'lucide-react'
+import { Loader2, AlertCircle, Copy, Check } from 'lucide-react'
 import { useLocaleStore } from '@/store/localeStore'
 import { usePluralRules } from '@/hooks/useCldrData'
 import { normalizeLocaleForCldr } from '@/lib/cldr/loader'
@@ -22,6 +22,8 @@ export default function PluralRulesPage() {
   const { data: ordinalData, isLoading: ordinalLoading } = usePluralRules(selectedLocale, 'ordinal')
   const [activeTab, setActiveTab] = useState<TabType>('cardinal')
   const [testNumber, setTestNumber] = useState('1')
+  const [copiedCardinal, setCopiedCardinal] = useState(false)
+  const [copiedOrdinal, setCopiedOrdinal] = useState(false)
 
   const normalizedLocale = normalizeLocaleForCldr(selectedLocale)
 
@@ -141,6 +143,22 @@ export default function PluralRulesPage() {
       `${numStr}${suffix} position`,
       `${numStr}${suffix} day`,
     ]
+  }
+
+  // Copy code to clipboard
+  const copyToClipboard = async (text: string, type: 'cardinal' | 'ordinal') => {
+    try {
+      await navigator.clipboard.writeText(text)
+      if (type === 'cardinal') {
+        setCopiedCardinal(true)
+        setTimeout(() => setCopiedCardinal(false), 2000)
+      } else {
+        setCopiedOrdinal(true)
+        setTimeout(() => setCopiedOrdinal(false), 2000)
+      }
+    } catch {
+      // Silently fail if clipboard API is not available
+    }
   }
 
   // Get category badge color
@@ -409,11 +427,27 @@ export default function PluralRulesPage() {
               <div className="text-xs font-medium text-muted-foreground mb-2">
                 Cardinal Example:
               </div>
-              <div className="font-mono text-sm bg-background px-4 py-3 rounded border">
-                {`const pr = new Intl.PluralRules('${selectedLocale}', { type: 'cardinal' })
+              <div className="relative">
+                <div className="font-mono text-sm bg-slate-950 text-green-400 px-4 py-3 rounded-lg border border-slate-800 overflow-x-auto">
+                  <pre className="whitespace-pre">{`const pr = new Intl.PluralRules('${selectedLocale}', { type: 'cardinal' })
 console.log(pr.select(1))    // "${getCategory(1, 'cardinal')}"
 console.log(pr.select(2))    // "${getCategory(2, 'cardinal')}"
-console.log(pr.select(5))    // "${getCategory(5, 'cardinal')}"`}
+console.log(pr.select(5))    // "${getCategory(5, 'cardinal')}"`}</pre>
+                </div>
+                <button
+                  onClick={() => copyToClipboard(
+                    `const pr = new Intl.PluralRules('${selectedLocale}', { type: 'cardinal' })\nconsole.log(pr.select(1))    // "${getCategory(1, 'cardinal')}"\nconsole.log(pr.select(2))    // "${getCategory(2, 'cardinal')}"\nconsole.log(pr.select(5))    // "${getCategory(5, 'cardinal')}"`,
+                    'cardinal'
+                  )}
+                  className="absolute top-2 right-2 p-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                  title="Copy to clipboard"
+                >
+                  {copiedCardinal ? (
+                    <Check className="w-4 h-4 text-green-400" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -421,11 +455,27 @@ console.log(pr.select(5))    // "${getCategory(5, 'cardinal')}"`}
               <div className="text-xs font-medium text-muted-foreground mb-2">
                 Ordinal Example:
               </div>
-              <div className="font-mono text-sm bg-background px-4 py-3 rounded border">
-                {`const pr = new Intl.PluralRules('${selectedLocale}', { type: 'ordinal' })
+              <div className="relative">
+                <div className="font-mono text-sm bg-slate-950 text-green-400 px-4 py-3 rounded-lg border border-slate-800 overflow-x-auto">
+                  <pre className="whitespace-pre">{`const pr = new Intl.PluralRules('${selectedLocale}', { type: 'ordinal' })
 console.log(pr.select(1))    // "${getCategory(1, 'ordinal')}"
 console.log(pr.select(2))    // "${getCategory(2, 'ordinal')}"
-console.log(pr.select(21))   // "${getCategory(21, 'ordinal')}"`}
+console.log(pr.select(21))   // "${getCategory(21, 'ordinal')}"`}</pre>
+                </div>
+                <button
+                  onClick={() => copyToClipboard(
+                    `const pr = new Intl.PluralRules('${selectedLocale}', { type: 'ordinal' })\nconsole.log(pr.select(1))    // "${getCategory(1, 'ordinal')}"\nconsole.log(pr.select(2))    // "${getCategory(2, 'ordinal')}"\nconsole.log(pr.select(21))   // "${getCategory(21, 'ordinal')}"`,
+                    'ordinal'
+                  )}
+                  className="absolute top-2 right-2 p-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                  title="Copy to clipboard"
+                >
+                  {copiedOrdinal ? (
+                    <Check className="w-4 h-4 text-green-400" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
           </div>

@@ -101,7 +101,7 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 
 ### Metrics
 
-- **Bundle Size:** 370.60KB gzipped ⚠️ (exceeds 300KB target - locale names +68.75KB, plural rules +7.58KB)
+- **Bundle Size:** 372.20KB gzipped ⚠️ (exceeds 300KB target - locale names +68.75KB, plural rules +7.58KB, code examples +1.60KB)
 - **Build Time:** ~1.7s ✅
 - **Test Coverage:** 117 tests, all passing ✅
 - **Supported Locales:** 14 common locales ✅
@@ -273,6 +273,51 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 
 ### Priority 2: Enhanced Features
 
+#### "Using with JavaScript" Code Examples ✅ COMPLETE
+**Actual Effort:** 0.5 days
+**Status:** Fully implemented across all demo pages
+
+**Implemented Features:**
+- [x] **Terminal-style code presentation** with dark background (slate-950) and green text
+- [x] **Copy-to-clipboard functionality** with visual feedback (checkmark for 2 seconds)
+- [x] **NumbersPage:** Examples for number, percent, and currency formatting
+- [x] **CurrencyPage:** Examples for standard and accounting currency formats
+- [x] **DatesPage:** Three code sections across tabs (Overview, Available Formats, Intervals)
+- [x] **PluralRulesPage:** Examples for cardinal and ordinal plural category detection
+- [x] Live output based on current locale and user input
+- [x] Floating copy button in top-right corner of each code block
+- [x] Hover effects and smooth transitions
+
+**Implementation Details:**
+- [x] Added Copy and Check icons from lucide-react
+- [x] Implemented copyToClipboard() functions with timeout
+- [x] Created terminal-style code blocks with <pre> tags
+- [x] Files: `src/pages/NumbersPage.tsx`, `src/pages/CurrencyPage.tsx`, `src/pages/DatesPage.tsx`, `src/pages/PluralRulesPage.tsx`
+
+**Bundle Size Impact:**
+- **+1.60 KB gzipped** (from 370.60KB to 372.20KB)
+
+**Key UX Achievement:**
+- Users can easily copy working code examples with one click
+- Classic terminal aesthetic makes code blocks instantly recognizable
+- All examples show live, locale-aware output for immediate verification
+
+#### Simplified Intervals Display ✅ COMPLETE
+**Actual Effort:** 0.1 days
+**Status:** Fully implemented
+
+**Changes:**
+- [x] Removed repetitive display of greatest difference keys (B, h, m, etc.)
+- [x] Shows skeleton name once with unique pattern(s) directly below
+- [x] Eliminates duplicate patterns using Set
+- [x] More compact and readable layout
+- [x] Single SourceBadge per skeleton instead of per difference key
+- [x] Files: `src/pages/DatesPage.tsx`
+
+**Key UX Achievement:**
+- Cleaner, more scannable display without visual clutter
+- Users can quickly understand the interval patterns without confusion
+
 #### Comparison Mode 🔄
 **Estimated Effort:** 2-3 days
 
@@ -397,7 +442,7 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 ## Technical Debt & Improvements
 
 ### High Priority
-- [ ] **Optimize bundle size** - Currently 370.60KB gzipped (exceeds 300KB target by 24%)
+- [ ] **Optimize bundle size** - Currently 372.20KB gzipped (exceeds 300KB target by 24%)
   - Implement code splitting for demo pages
   - Consider lazy loading for locale names data and plural rules data
   - Investigate dynamic imports for less common locales
@@ -428,10 +473,11 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 ### Current Limitations
 1. **Limited Locale Support** - Only 14 common locales (out of 500+ in CLDR)
    - Future: Add dynamic import support for all locales
-2. **Bundle Size Exceeds Target** - 370.60KB gzipped (exceeds 300KB target by 24%)
+2. **Bundle Size Exceeds Target** - 372.20KB gzipped (exceeds 300KB target by 24%)
    - Caused by complete data loading for comprehensive coverage:
      - Locale names data: +68.75KB (700+ languages, 325+ territories, 220+ scripts, 60+ variants)
      - Plural rules data: +7.58KB (cardinal, ordinal, plural ranges)
+     - "Using with JavaScript" code examples: +1.60KB (all demo pages)
    - Trade-off: Complete data coverage vs bundle size
    - Future: Implement code splitting, lazy loading, or on-demand data fetching
 3. **Calendar Support** - Dates demo only supports Gregorian calendar

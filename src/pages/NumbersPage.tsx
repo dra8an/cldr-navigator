@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Loader2, AlertCircle } from 'lucide-react'
+import { Loader2, AlertCircle, Copy, Check } from 'lucide-react'
 import { useLocaleStore } from '@/store/localeStore'
 import { useNumberData } from '@/hooks/useCldrData'
 import { buildJsonPath } from '@/lib/mapping/resolver'
@@ -10,6 +10,7 @@ export default function NumbersPage() {
   const { selectedLocale } = useLocaleStore()
   const { data, isLoading, error } = useNumberData(selectedLocale)
   const [customNumber, setCustomNumber] = useState('1234567.89')
+  const [copiedCode, setCopiedCode] = useState(false)
 
   // Get the normalized locale for accessing CLDR data
   const normalizedLocale = normalizeLocaleForCldr(selectedLocale)
@@ -75,6 +76,17 @@ export default function NumbersPage() {
       }).format(num)
     } catch {
       return num.toString()
+    }
+  }
+
+  // Copy code to clipboard
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopiedCode(true)
+      setTimeout(() => setCopiedCode(false), 2000)
+    } catch {
+      // Silently fail if clipboard API is not available
     }
   }
 
@@ -381,6 +393,58 @@ export default function NumbersPage() {
               <div className="text-lg font-mono">
                 {formatCurrency(parseFloat(customNumber) || 0)}
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Using with JavaScript */}
+      <div className="bg-card border rounded-lg p-6">
+        <h2 className="text-xl font-semibold mb-4">Using with JavaScript</h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          You can use the native <code className="px-1 py-0.5 bg-muted rounded text-xs">Intl.NumberFormat</code> API to format numbers in your code:
+        </p>
+
+        <div className="space-y-4">
+          <div>
+            <div className="text-xs font-medium text-muted-foreground mb-2">
+              Number Formatting Example:
+            </div>
+            <div className="relative">
+              <div className="font-mono text-sm bg-slate-950 text-green-400 px-4 py-3 rounded-lg border border-slate-800 overflow-x-auto">
+                <pre className="whitespace-pre">{`const formatter = new Intl.NumberFormat('${selectedLocale}')
+console.log(formatter.format(${customNumber}))
+// Output: "${formatNumber(parseFloat(customNumber) || 0)}"
+
+// Percent formatting
+const percentFormatter = new Intl.NumberFormat('${selectedLocale}', {
+  style: 'percent',
+  minimumFractionDigits: 2
+})
+console.log(percentFormatter.format(${(parseFloat(customNumber) || 0) / 100}))
+// Output: "${formatPercent((parseFloat(customNumber) || 0) / 100)}"
+
+// Currency formatting
+const currencyFormatter = new Intl.NumberFormat('${selectedLocale}', {
+  style: 'currency',
+  currency: 'USD'
+})
+console.log(currencyFormatter.format(${customNumber}))
+// Output: "${formatCurrency(parseFloat(customNumber) || 0)}"`}</pre>
+              </div>
+              <button
+                onClick={() => copyToClipboard(
+                  `const formatter = new Intl.NumberFormat('${selectedLocale}')\nconsole.log(formatter.format(${customNumber}))\n// Output: "${formatNumber(parseFloat(customNumber) || 0)}"\n\n// Percent formatting\nconst percentFormatter = new Intl.NumberFormat('${selectedLocale}', {\n  style: 'percent',\n  minimumFractionDigits: 2\n})\nconsole.log(percentFormatter.format(${(parseFloat(customNumber) || 0) / 100}))\n// Output: "${formatPercent((parseFloat(customNumber) || 0) / 100)}"\n\n// Currency formatting\nconst currencyFormatter = new Intl.NumberFormat('${selectedLocale}', {\n  style: 'currency',\n  currency: 'USD'\n})\nconsole.log(currencyFormatter.format(${customNumber}))\n// Output: "${formatCurrency(parseFloat(customNumber) || 0)}"`
+                )}
+                className="absolute top-2 right-2 p-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                title="Copy to clipboard"
+              >
+                {copiedCode ? (
+                  <Check className="w-4 h-4 text-green-400" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
+              </button>
             </div>
           </div>
         </div>

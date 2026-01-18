@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Loader2, AlertCircle, Search } from 'lucide-react'
+import { Loader2, AlertCircle, Search, Copy, Check } from 'lucide-react'
 import { useLocaleStore } from '@/store/localeStore'
 import { useCurrencyData, useNumberData } from '@/hooks/useCldrData'
 import { buildJsonPath } from '@/lib/mapping/resolver'
@@ -22,6 +22,7 @@ export default function CurrencyPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCurrency, setSelectedCurrency] = useState('USD')
   const [amount, setAmount] = useState(1234.56)
+  const [copiedCode, setCopiedCode] = useState(false)
 
   const normalizedLocale = normalizeLocaleForCldr(selectedLocale)
 
@@ -99,6 +100,17 @@ export default function CurrencyPage() {
       }).format(value)
     } catch {
       return `${currencyCode} ${value}`
+    }
+  }
+
+  // Copy code to clipboard
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopiedCode(true)
+      setTimeout(() => setCopiedCode(false), 2000)
+    } catch {
+      // Silently fail if clipboard API is not available
     }
   }
 
@@ -486,6 +498,55 @@ export default function CurrencyPage() {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Using with JavaScript */}
+          <div className="bg-card border rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Using with JavaScript</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              You can use the native <code className="px-1 py-0.5 bg-muted rounded text-xs">Intl.NumberFormat</code> API to format currencies in your code:
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <div className="text-xs font-medium text-muted-foreground mb-2">
+                  Currency Formatting Example:
+                </div>
+                <div className="relative">
+                  <div className="font-mono text-sm bg-slate-950 text-green-400 px-4 py-3 rounded-lg border border-slate-800 overflow-x-auto">
+                    <pre className="whitespace-pre">{`// Standard format
+const formatter = new Intl.NumberFormat('${selectedLocale}', {
+  style: 'currency',
+  currency: '${selectedCurrency}'
+})
+console.log(formatter.format(${amount}))
+// Output: "${formatCurrency(amount, selectedCurrency)}"
+
+// Accounting format (negative numbers in parentheses)
+const accountingFormatter = new Intl.NumberFormat('${selectedLocale}', {
+  style: 'currency',
+  currency: '${selectedCurrency}',
+  currencySign: 'accounting'
+})
+console.log(accountingFormatter.format(${amount}))
+// Output: "${formatCurrencyAccounting(amount, selectedCurrency)}"`}</pre>
+                  </div>
+                  <button
+                    onClick={() => copyToClipboard(
+                      `// Standard format\nconst formatter = new Intl.NumberFormat('${selectedLocale}', {\n  style: 'currency',\n  currency: '${selectedCurrency}'\n})\nconsole.log(formatter.format(${amount}))\n// Output: "${formatCurrency(amount, selectedCurrency)}"\n\n// Accounting format (negative numbers in parentheses)\nconst accountingFormatter = new Intl.NumberFormat('${selectedLocale}', {\n  style: 'currency',\n  currency: '${selectedCurrency}',\n  currencySign: 'accounting'\n})\nconsole.log(accountingFormatter.format(${amount}))\n// Output: "${formatCurrencyAccounting(amount, selectedCurrency)}"`
+                    )}
+                    className="absolute top-2 right-2 p-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                    title="Copy to clipboard"
+                  >
+                    {copiedCode ? (
+                      <Check className="w-4 h-4 text-green-400" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

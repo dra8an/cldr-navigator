@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **"Using with JavaScript" Code Examples** (2026-01-18)
+  - Added terminal-style code examples to all demo pages with "Try It Yourself" sections
+  - **Terminal-style presentation:** Dark background (slate-950) with green text (classic terminal aesthetic)
+  - **Copy-to-clipboard functionality** with visual feedback (checkmark icon for 2 seconds)
+  - **NumbersPage:** Examples for number, percent, and currency formatting
+  - **CurrencyPage:** Examples for standard and accounting currency formats
+  - **DatesPage:** Three separate sections across tabs:
+    - Overview tab: Full date and combined date/time formatting
+    - Available Formats tab: Custom format options with year/month and weekday
+    - Intervals tab: Date range and time range formatting
+  - **PluralRulesPage:** Examples for cardinal and ordinal plural category detection
+  - All examples show live output based on current locale and user input
+  - Floating copy button in top-right corner of each code block
+  - Hover effects and smooth transitions for better UX
+  - Files: `src/pages/NumbersPage.tsx`, `src/pages/CurrencyPage.tsx`, `src/pages/DatesPage.tsx`, `src/pages/PluralRulesPage.tsx`
+
 - **Plural Rules Demo Page** (2026-01-18)
   - Comprehensive plural rules demo at `/plural-rules`
   - Two-tab navigation: Cardinal (quantity) and Ordinal (position/ranking)
@@ -135,6 +151,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Documentation: `Docs/NATIVE-SKELETON-IMPLEMENTATION.md`
 
 ### Changed
+- **Simplified Intervals Display** (2026-01-18)
+  - Removed repetitive display of greatest difference keys (B, h, m, etc.) in Intervals tab
+  - Now shows skeleton name once with unique pattern(s) directly below
+  - Eliminates duplicate patterns using Set to show only unique values
+  - More compact and readable layout
+  - Single SourceBadge per skeleton instead of per difference key
+  - Files: `src/pages/DatesPage.tsx`
+
 - **Dates & Times Page Tab Reorganization** (2026-01-17)
   - Renamed "Overview" tab to "Standard Formats" for clarity
   - Improved tab structure: Standard Formats, Months & Days, Available Formats, Intervals
@@ -352,11 +376,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Testing**: Vitest 2.1.8, Testing Library, jsdom
 
 #### Bundle Size
-- Production bundle: ~1.53MB (370.60KB gzipped)
-- Initial load: 370.60KB gzipped
+- Production bundle: ~1.54MB (372.20KB gzipped)
+- Initial load: 372.20KB gzipped
 - Note: Exceeds original 300KB target due to complete data loading
   - Locale names data: +68.75KB (700+ languages, 325+ territories, 220+ scripts, 60+ variants)
   - Plural rules data: +7.58KB (cardinal, ordinal, plural ranges)
+  - "Using with JavaScript" code examples: +1.60KB (all demo pages)
 - Previous optimizations: **32.5 KB reduction** from native skeleton formatter vs @formatjs approach
 
 #### Performance
@@ -379,9 +404,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Future: Add calendar selector UI
 - No comparison mode yet
   - Side-by-side locale comparison planned for Phase 2/3
-- **Bundle size exceeds 300KB target** (370.60KB gzipped)
+- **Bundle size exceeds 300KB target** (372.20KB gzipped)
   - Caused by loading complete locale names data for all 14 locales (42 additional JSON files)
   - Caused by loading plural rules data (plurals, ordinals, plural ranges)
+  - Caused by "Using with JavaScript" code examples across all demo pages
   - Trade-off: Complete data coverage vs bundle size
   - Future: Consider code splitting or lazy loading strategies
 - Some CLDR skeleton patterns not supported by native Intl
