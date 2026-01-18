@@ -21,7 +21,17 @@
       "Bash(npm run verify:*)",
       "Bash(npm run test:run:*)",
       "Bash(npm run dev:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(node -e:*)",
+      "Bash(git checkout:*)",
+      "Bash(npm search:*)",
+      "WebFetch(domain:unicode.org)",
+      "WebFetch(domain:docs.rs)",
+      "Bash(node:*)",
+      "Bash(done)",
+      "WebFetch(domain:formatjs.github.io)",
+      "WebFetch(domain:messageformat.github.io)",
+      "Bash(npx tsx:*)"
     ]
   }
 }

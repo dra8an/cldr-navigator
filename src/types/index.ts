@@ -141,6 +141,15 @@ export interface CldrDates {
         long?: string
         medium?: string
         short?: string
+        availableFormats?: {
+          [formatId: string]: string
+        }
+        intervalFormats?: {
+          intervalFormatFallback?: string
+          [formatId: string]: string | {
+            [greatestDifference: string]: string
+          } | undefined
+        }
       }
     }
   }

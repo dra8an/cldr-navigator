@@ -258,6 +258,20 @@ function convertPathSegmentToXPath(segment: string): string {
 }
 
 /**
+ * Converts a segment considering its context (previous segment)
+ * Handles special cases like gregorian -> calendar[@type='gregorian']
+ */
+function convertSegmentWithContext(segment: string, prevSegment?: string): string {
+  // Special case: gregorian/chinese/etc after 'calendars' should become calendar[@type='...']
+  if (prevSegment === 'calendars' && (segment === 'gregorian' || segment === 'chinese' || segment === 'hebrew')) {
+    return `calendar[@type='${segment}']`
+  }
+
+  // Otherwise use the normal conversion
+  return convertPathSegmentToXPath(segment)
+}
+
+/**
  * Transforms a CLDR JSON path to XPath using transformation rules
  * This is the fallback when no precomputed mapping exists
  */
@@ -267,9 +281,54 @@ function transformJsonPathToXPath(jsonPath: string): string {
 
   // Split by dots and process each segment
   const segments = pathWithoutLocale.split('.')
-  const xpathSegments = segments.map(convertPathSegmentToXPath)
 
-  // Construct XPath
+  // Special handling for availableFormats and intervalFormats
+  const availableFormatsIdx = segments.indexOf('availableFormats')
+  if (availableFormatsIdx !== -1 && segments.length > availableFormatsIdx + 1) {
+    // Path is like: dates.calendars.gregorian.dateTimeFormats.availableFormats.Bh
+    // Should become: //ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/availableFormats/dateFormatItem[@id='Bh']
+    const beforeAvailable = segments.slice(0, availableFormatsIdx + 1)
+    const formatId = segments[availableFormatsIdx + 1]
+
+    const xpathBefore = beforeAvailable.map((seg, idx) =>
+      convertSegmentWithContext(seg, idx > 0 ? beforeAvailable[idx - 1] : undefined)
+    ).join('/')
+    return `//ldml/${xpathBefore}/dateFormatItem[@id='${formatId}']`
+  }
+
+  const intervalFormatsIdx = segments.indexOf('intervalFormats')
+  if (intervalFormatsIdx !== -1 && segments.length > intervalFormatsIdx + 1) {
+    const beforeInterval = segments.slice(0, intervalFormatsIdx + 1)
+    const formatId = segments[intervalFormatsIdx + 1]
+
+    // Check if this is intervalFormatFallback (special case)
+    if (formatId === 'intervalFormatFallback') {
+      const xpathBefore = beforeInterval.map((seg, idx) =>
+        convertSegmentWithContext(seg, idx > 0 ? beforeInterval[idx - 1] : undefined)
+      ).join('/')
+      return `//ldml/${xpathBefore}/intervalFormatFallback`
+    }
+
+    // Check if there's a greatestDifference level
+    if (segments.length > intervalFormatsIdx + 2) {
+      const greatestDiff = segments[intervalFormatsIdx + 2]
+      const xpathBefore = beforeInterval.map((seg, idx) =>
+        convertSegmentWithContext(seg, idx > 0 ? beforeInterval[idx - 1] : undefined)
+      ).join('/')
+      return `//ldml/${xpathBefore}/intervalFormatItem[@id='${formatId}']/greatestDifference[@id='${greatestDiff}']`
+    }
+
+    // Just the intervalFormatItem itself
+    const xpathBefore = beforeInterval.map((seg, idx) =>
+      convertSegmentWithContext(seg, idx > 0 ? beforeInterval[idx - 1] : undefined)
+    ).join('/')
+    return `//ldml/${xpathBefore}/intervalFormatItem[@id='${formatId}']`
+  }
+
+  // Default transformation
+  const xpathSegments = segments.map((seg, idx) =>
+    convertSegmentWithContext(seg, idx > 0 ? segments[idx - 1] : undefined)
+  )
   return '//ldml/' + xpathSegments.join('/')
 }
 

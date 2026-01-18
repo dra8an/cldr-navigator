@@ -265,4 +265,64 @@ describe('Mapping Resolver', () => {
       })
     })
   })
+
+  describe('Dynamic Available Formats XPath Mappings', () => {
+    it('should resolve available format Bh path', () => {
+      const result = resolveXPath('dates.calendars.gregorian.dateTimeFormats.availableFormats.Bh', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/availableFormats/dateFormatItem[@id='Bh']"
+      )
+    })
+
+    it('should resolve available format d path', () => {
+      const result = resolveXPath('dates.calendars.gregorian.dateTimeFormats.availableFormats.d', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/availableFormats/dateFormatItem[@id='d']"
+      )
+    })
+
+    it('should resolve available format yMd path', () => {
+      const result = resolveXPath('dates.calendars.gregorian.dateTimeFormats.availableFormats.yMd', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/availableFormats/dateFormatItem[@id='yMd']"
+      )
+    })
+
+    it('should resolve available format yMMMd path', () => {
+      const result = resolveXPath('dates.calendars.gregorian.dateTimeFormats.availableFormats.yMMMd', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/availableFormats/dateFormatItem[@id='yMMMd']"
+      )
+    })
+  })
+
+  describe('Dynamic Interval Formats XPath Mappings', () => {
+    it('should resolve intervalFormatFallback path', () => {
+      const result = resolveXPath('dates.calendars.gregorian.dateTimeFormats.intervalFormats.intervalFormatFallback', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/intervalFormats/intervalFormatFallback"
+      )
+    })
+
+    it('should resolve interval format item yMd path', () => {
+      const result = resolveXPath('dates.calendars.gregorian.dateTimeFormats.intervalFormats.yMd', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/intervalFormats/intervalFormatItem[@id='yMd']"
+      )
+    })
+
+    it('should resolve interval format with greatestDifference y', () => {
+      const result = resolveXPath('dates.calendars.gregorian.dateTimeFormats.intervalFormats.yMd.y', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/intervalFormats/intervalFormatItem[@id='yMd']/greatestDifference[@id='y']"
+      )
+    })
+
+    it('should resolve interval format with greatestDifference M', () => {
+      const result = resolveXPath('dates.calendars.gregorian.dateTimeFormats.intervalFormats.yMd.M', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/intervalFormats/intervalFormatItem[@id='yMd']/greatestDifference[@id='M']"
+      )
+    })
+  })
 })

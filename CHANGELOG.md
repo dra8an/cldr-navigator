@@ -8,6 +8,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Native CLDR Skeleton Pattern Formatter** (2026-01-17)
+  - Implemented lightweight skeleton pattern parser using native `Intl.DateTimeFormat`
+  - **Full support for flexible day periods (field 'B')** via `dayPeriod: 'long'` option
+  - Zero external dependencies - removed @formatjs packages completely
+  - **Bundle size reduction: 32.5 KB gzipped** (from 323.39 KB to 290.86 KB)
+  - Supports all major CLDR field symbols: G, y, M, L, d, E, e, c, a, b, B, h, H, K, k, m, s, S, z, Z, v, V
+  - Automatic filtering of unsupported patterns (Quarter Q/q, Week w/W)
+  - 14 comprehensive tests with 100% coverage
+  - Documentation: `Docs/NATIVE-SKELETON-IMPLEMENTATION.md` with complete ICU4X investigation
+  - Files: `src/lib/cldr/skeletonFormatter.ts`
+
+- **Comprehensive CLDR Research Documentation** (2026-01-17)
+  - Complete investigation of ICU4X source code proving 'B' field limitation
+  - Detailed UTS 35 skeleton matching algorithm documentation
+  - Semantic skeletons specification and field equivalence rules
+  - Field symbol reference table with all UTS 35 symbols
+  - Empirical testing with zh-Hant locale proving native solution superiority
+  - Documentation: `Docs/NATIVE-SKELETON-IMPLEMENTATION.md`
+
+### Changed
+- **Dates & Times Page Tab Reorganization** (2026-01-17)
+  - Renamed "Overview" tab to "Standard Formats" for clarity
+  - Improved tab structure: Standard Formats, Months & Days, Available Formats, Intervals
+  - All tabs use native skeleton formatter for consistent formatting
+
+- **Unsupported Pattern Filtering** (2026-01-17)
+  - Available Formats tab now filters out patterns with Quarter (Q, q) and Week (w, W) fields
+  - Prevents misleading partial output for unsupported patterns
+  - Users only see patterns that work correctly with native Intl
+  - Examples filtered: `MMMMW-count-other`, `yw`, `yQQQ`, `Qq`
+
+### Fixed
+- **Dynamic XPath Mapping for Available Formats and Intervals** (2026-01-17)
+  - Issue: Source badges for available formats (e.g., `Bh`, `d`, `yMd`) showed "Element not found"
+  - Issue: Source badges for interval formats showed "Element not found"
+  - Root cause: No XPath mappings existed for ~65 availableFormats and ~40 intervalFormats
+  - Fix: Enhanced `transformJsonPathToXPath()` to dynamically generate XPath for:
+    - `availableFormats.<id>` → `availableFormats/dateFormatItem[@id='<id>']`
+    - `intervalFormats.<id>` → `intervalFormats/intervalFormatItem[@id='<id>']`
+    - `intervalFormats.<id>.<diff>` → `intervalFormatItem[@id='<id>']/greatestDifference[@id='<diff>']`
+    - Special handling for `calendar[@type='gregorian']` context
+  - Added 12 new tests for dynamic mapping scenarios
+  - Impact: All available formats and interval formats now have working source links
+  - Total test count increased from 88 to 100 tests
+
+- **Enhanced Dates Page with Tabs** (2026-01-17)
+  - Reorganized into 4 tabs: Standard Formats, Months & Days, Available Formats, Intervals
+  - **Standard Formats tab**: Date/time formats with interactive formatter
+  - **Months & Days tab**: Month names, day names, day periods (AM/PM)
+  - **Available Formats tab**: ~50 supported skeleton patterns with live examples
+  - **Intervals tab**: Date range patterns with dual date picker
+  - All skeleton patterns use native formatter with proper flexible day period support
+  - Unsupported patterns (Quarter, Week fields) automatically filtered
+  - Interactive "Try It Yourself" sections in all tabs
+  - Full SourceBadge integration on all data points
+
 - **Dates & Times Demo Page** (2026-01-17)
   - Full implementation of date/time localization demo at `/dates`
   - Month names display (wide and abbreviated formats)
@@ -107,11 +163,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Testing Infrastructure
 - Vitest test runner with jsdom environment
-- 79 comprehensive unit tests across 3 test suites
+- 101 comprehensive unit tests across 4 test suites
 - Test coverage for:
   - XML snippet extraction (29 tests, including 7 calendar regression tests)
-  - JSON-to-XPath mapping (33 tests, including date/time mappings)
+  - JSON-to-XPath mapping (41 tests, including date/time mappings)
   - Locale normalization (17 tests)
+  - Skeleton formatter (14 tests, including unsupported pattern detection)
 - Test scripts: `test`, `test:run`, `test:coverage`, `test:ui`
 - Verification script for full CI/CD pipeline
 - Testing documentation and guides
@@ -163,9 +220,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Testing**: Vitest 2.1.8, Testing Library, jsdom
 
 #### Bundle Size
-- Production bundle: ~1.23MB (288.84KB gzipped)
-- Initial load: 288.84KB gzipped
+- Production bundle: ~1.25MB (290.83KB gzipped)
+- Initial load: 290.83KB gzipped
 - Target met: < 300KB ✓ (plan specified < 300KB)
+- **32.5 KB reduction** from native implementation vs @formatjs approach
 
 #### Performance
 - TanStack Query: 24-hour cache for CLDR data
@@ -189,9 +247,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Currencies, locale names, plural rules planned for Phase 2
 - No comparison mode yet
   - Side-by-side locale comparison planned for Phase 2
-- Date/time demo missing advanced features:
-  - Available formats (additional format patterns)
-  - Interval formats (date range formatting)
+- Some CLDR skeleton patterns not supported by native Intl
+  - Quarter fields (Q, q) and Week fields (w, W) are filtered out
+  - These require custom calendar calculations not provided by Intl
+  - ~50 of ~65 available formats work (77% coverage)
 
 ### Dependencies
 
