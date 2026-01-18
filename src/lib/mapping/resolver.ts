@@ -325,6 +325,38 @@ function transformJsonPathToXPath(jsonPath: string): string {
     return `//ldml/${xpathBefore}/intervalFormatItem[@id='${formatId}']`
   }
 
+  // Special handling for currencies
+  const currenciesIdx = segments.indexOf('currencies')
+  if (currenciesIdx !== -1 && segments.length > currenciesIdx + 1) {
+    // Path is like: numbers.currencies.USD.displayName
+    // Should become: //ldml/numbers/currencies/currency[@type='USD']/displayName
+    const beforeCurrencies = segments.slice(0, currenciesIdx + 1)
+    const currencyCode = segments[currenciesIdx + 1]
+
+    const xpathBefore = beforeCurrencies.map((seg, idx) =>
+      convertSegmentWithContext(seg, idx > 0 ? beforeCurrencies[idx - 1] : undefined)
+    ).join('/')
+
+    // If there's a field after the currency code
+    if (segments.length > currenciesIdx + 2) {
+      const field = segments[currenciesIdx + 2]
+
+      // Check if field has attributes (e.g., displayName-count-one)
+      const fieldAttrPattern = /^([a-zA-Z]+)-([a-zA-Z]+)-([a-zA-Z0-9]+)$/
+      const fieldMatch = field.match(fieldAttrPattern)
+
+      if (fieldMatch) {
+        const [, fieldName, attrName, attrValue] = fieldMatch
+        return `//ldml/${xpathBefore}/currency[@type='${currencyCode}']/${fieldName}[@${attrName}='${attrValue}']`
+      }
+
+      return `//ldml/${xpathBefore}/currency[@type='${currencyCode}']/${field}`
+    }
+
+    // Just the currency element itself
+    return `//ldml/${xpathBefore}/currency[@type='${currencyCode}']`
+  }
+
   // Default transformation
   const xpathSegments = segments.map((seg, idx) =>
     convertSegmentWithContext(seg, idx > 0 ? segments[idx - 1] : undefined)

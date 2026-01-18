@@ -8,6 +8,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Currency Demo Page** (2026-01-17)
+  - Comprehensive currency localization demo at `/currency`
+  - Four-tab navigation: Overview, Major Currencies, All Currencies, Try It Yourself
+  - **300+ currency codes** from CLDR (modern, historical, and special currencies)
+  - Currency symbols, display names, and format patterns for all locales
+  - **Standard and accounting format patterns** with live examples
+  - Interactive currency formatter with amount and currency selection
+  - Searchable currency list with real-time filtering
+  - Major world currencies section (24 most common: USD, EUR, GBP, JPY, etc.)
+  - Full SourceBadge integration for all currency data points
+  - Responsive grid layouts (1-3 columns based on screen size)
+  - Files: `src/pages/CurrencyPage.tsx`
+
+- **Dynamic Currency XPath Mapping** (2026-01-17)
+  - Enhanced `transformJsonPathToXPath()` to handle currency paths dynamically
+  - Pattern: `numbers.currencies.<CODE>.<field>` → `//ldml/numbers/currencies/currency[@type='<CODE>']/<field>`
+  - Supports currency display names: `currencies.USD.displayName`
+  - Supports currency symbols: `currencies.EUR.symbol`
+  - Supports plural forms: `currencies.GBP.displayName-count-one` → `displayName[@count='one']`
+  - Supports symbol variants: `currencies.USD.symbol-alt-narrow` → `symbol[@alt='narrow']`
+  - No precomputed mappings needed - generates XPaths on-the-fly for all 300+ currencies
+  - Files: `src/lib/mapping/resolver.ts`
+
+- **Currency XPath Mapping Tests** (2026-01-17)
+  - 8 new comprehensive tests for currency XPath generation
+  - Tests cover display names, symbols, plural forms, and symbol variants
+  - Verifies correct XPath generation for multiple currency codes
+  - All 107 tests passing (up from 99)
+  - Files: `src/lib/mapping/__tests__/resolver.test.ts`
+
 - **Native CLDR Skeleton Pattern Formatter** (2026-01-17)
   - Implemented lightweight skeleton pattern parser using native `Intl.DateTimeFormat`
   - **Full support for flexible day periods (field 'B')** via `dayPeriod: 'long'` option
@@ -150,6 +180,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Default numbering system display
   - Source buttons on every data point linking to XML
 
+- **Currency Formatting Demo** (Phase 2)
+  - 300+ currency codes from CLDR (modern, historical, special)
+  - Currency symbols and display names for all locales
+  - Standard and accounting format patterns
+  - Interactive currency formatter with search
+  - Source buttons on every data point
+  - 4-tab navigation structure
+
 #### UI Components
 - Responsive layout with header, sidebar, and footer
 - Locale selector with 15 common locales and recent history
@@ -163,12 +201,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Testing Infrastructure
 - Vitest test runner with jsdom environment
-- 101 comprehensive unit tests across 4 test suites
+- 107 comprehensive unit tests across 4 test suites
 - Test coverage for:
   - XML snippet extraction (29 tests, including 7 calendar regression tests)
-  - JSON-to-XPath mapping (41 tests, including date/time mappings)
+  - JSON-to-XPath mapping (49 tests, including date/time and currency mappings)
   - Locale normalization (17 tests)
-  - Skeleton formatter (14 tests, including unsupported pattern detection)
+  - Skeleton formatter (12 tests, including unsupported pattern detection)
 - Test scripts: `test`, `test:run`, `test:coverage`, `test:ui`
 - Verification script for full CI/CD pipeline
 - Testing documentation and guides
@@ -243,8 +281,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Date/time demo only supports Gregorian calendar
   - CLDR includes Chinese, Hebrew, Islamic, and other calendars
   - Future: Add calendar selector UI
-- Currencies and other demos not yet implemented
-  - Currencies, locale names, plural rules planned for Phase 2
+- Locale names and plural rules demos not yet implemented
+  - Planned for Phase 2
 - No comparison mode yet
   - Side-by-side locale comparison planned for Phase 2
 - Some CLDR skeleton patterns not supported by native Intl
@@ -307,9 +345,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### [0.1.0] - Planned (Phase 2)
 - ✅ Dates & Times demo (Gregorian calendar)
+- ✅ Currency demo (300+ currencies)
 - Calendar selector (Chinese, Hebrew, Islamic, etc.)
 - Available formats and interval formats for dates
-- Currency demo
 - Locale names demo
 - Comparison mode (side-by-side locales)
 - Enhanced XML viewer with syntax highlighting

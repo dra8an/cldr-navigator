@@ -12,7 +12,7 @@ const navItems = [
   { to: '/', icon: Home, label: 'Home' },
   { to: '/numbers', icon: Hash, label: 'Numbers' },
   { to: '/dates', icon: Calendar, label: 'Dates & Times' },
-  { to: '/currencies', icon: DollarSign, label: 'Currencies', disabled: true },
+  { to: '/currency', icon: DollarSign, label: 'Currency' },
   { to: '/locales', icon: Globe2, label: 'Locale Names', disabled: true },
   { to: '/plurals', icon: ListOrdered, label: 'Plural Rules', disabled: true },
 ]

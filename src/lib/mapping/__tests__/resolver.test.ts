@@ -325,4 +325,66 @@ describe('Mapping Resolver', () => {
       )
     })
   })
+
+  describe('Currency XPath Mappings', () => {
+    it('should resolve currency display name paths', () => {
+      const result = resolveXPath('numbers.currencies.USD.displayName', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/numbers/currencies/currency[@type='USD']/displayName"
+      )
+    })
+
+    it('should resolve currency symbol paths', () => {
+      const result = resolveXPath('numbers.currencies.EUR.symbol', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/numbers/currencies/currency[@type='EUR']/symbol"
+      )
+    })
+
+    it('should resolve currency plural forms (count-one)', () => {
+      const result = resolveXPath('numbers.currencies.GBP.displayName-count-one', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/numbers/currencies/currency[@type='GBP']/displayName[@count='one']"
+      )
+    })
+
+    it('should resolve currency plural forms (count-other)', () => {
+      const result = resolveXPath('numbers.currencies.USD.displayName-count-other', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/numbers/currencies/currency[@type='USD']/displayName[@count='other']"
+      )
+    })
+
+    it('should resolve currency symbol variants', () => {
+      const result = resolveXPath('numbers.currencies.USD.symbol-alt-narrow', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/numbers/currencies/currency[@type='USD']/symbol[@alt='narrow']"
+      )
+    })
+
+    it('should resolve paths for different currency codes', () => {
+      const currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'CNY']
+      currencies.forEach(code => {
+        const result = resolveXPath(`numbers.currencies.${code}.displayName`, 'en')
+        expect(result.xpath).toBe(
+          `//ldml/numbers/currencies/currency[@type='${code}']/displayName`
+        )
+      })
+    })
+
+    it('should work with main.locale prefix', () => {
+      const result = resolveXPath('main.en.numbers.currencies.EUR.symbol', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/numbers/currencies/currency[@type='EUR']/symbol"
+      )
+    })
+
+    it('should work with different locales', () => {
+      const result = resolveXPath('numbers.currencies.JPY.displayName', 'ja')
+      expect(result.xpath).toBe(
+        "//ldml/numbers/currencies/currency[@type='JPY']/displayName"
+      )
+      expect(result.xmlFile).toBe('common/main/ja.xml')
+    })
+  })
 })

@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-01-17
 **Current Version:** 0.0.1
-**Status:** Phase 2 In Progress - Dates & Times Complete ✅
+**Status:** Phase 2 In Progress - Dates & Times ✅ | Currency ✅
 
 ---
 
@@ -101,9 +101,9 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 
 ### Metrics
 
-- **Bundle Size:** 290.83KB gzipped ✅ (target: < 300KB)
-- **Build Time:** ~2.0s ✅
-- **Test Coverage:** 101 tests, all passing ✅
+- **Bundle Size:** 292.66KB gzipped ✅ (target: < 300KB)
+- **Build Time:** ~2.2s ✅
+- **Test Coverage:** 107 tests, all passing ✅
 - **Supported Locales:** 14 common locales ✅
 - **Performance:** TanStack Query 24-hour cache ✅
 - **Native Intl:** Zero external formatter dependencies ✅
@@ -153,24 +153,42 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 - Implemented lightweight parser converting CLDR skeletons to Intl options
 - Achieved full CLDR skeleton support with zero external dependencies
 
-#### Currency Demo 💰
-**Estimated Effort:** 1-2 days
+#### Currency Demo 💰 ✅ COMPLETE
+**Actual Effort:** 1 day
+**Status:** Fully implemented with native Intl.NumberFormat
 
-- [ ] Currency symbols ($, €, ¥, etc.)
-- [ ] Currency display names
-- [ ] Decimal handling per currency
-- [ ] Symbol placement rules
-- [ ] Accounting format patterns
-- [ ] Interactive currency formatter
-- [ ] Source links for currency data
+**Implemented Features:**
+- [x] **300+ currency codes** from CLDR (modern, historical, special)
+- [x] Currency symbols ($, €, ¥, £, ¤, etc.) for all currencies
+- [x] Currency display names (e.g., "US Dollar", "Euro")
+- [x] Plural forms (displayName-count-one, displayName-count-other)
+- [x] Symbol variants (standard symbol, narrow symbol)
+- [x] Standard and accounting format patterns
+- [x] Interactive currency formatter with amount input
+- [x] Currency selector with major currencies prioritized
+- [x] **Searchable currency list** with real-time filtering
+- [x] **4-tab navigation:** Overview, Major Currencies, All Currencies, Try It Yourself
+- [x] Major world currencies section (24 most common)
+- [x] Source links for all currency data (displayName, symbol, patterns)
+- [x] Responsive grid layouts
+- [x] Live formatting examples for all currencies
 
-**Implementation Tasks:**
-- [ ] Create `src/pages/CurrencyPage.tsx`
-- [ ] Add `useCurrencyData` hook
-- [ ] Add currency-specific XPath mappings
-- [ ] Create currency display components
-- [ ] Add route to router
-- [ ] Write tests for currency data
+**Implementation Details:**
+- [x] Created `src/pages/CurrencyPage.tsx` with tabbed navigation
+- [x] `useCurrencyData` hook already existed in `useCldrData.ts`
+- [x] Enhanced `transformJsonPathToXPath()` for dynamic currency mapping
+- [x] Added 8 comprehensive tests for currency XPath generation
+- [x] Added route `/currency` to router
+- [x] Updated sidebar navigation (enabled Currency)
+- [x] Fixed React Hooks linting errors
+- [x] Verified production build works correctly
+
+**Key Technical Achievement:**
+- Dynamic XPath generation for all 300+ currencies without precomputed mappings
+- Pattern: `currencies.<CODE>.<field>` → `currency[@type='<CODE>']/<field>`
+- Supports complex attribute patterns (count, alt) automatically
+- Search functionality filters by code, name, or symbol
+- Bundle size increased by only 1.83 KB gzipped (from 290.83KB to 292.66KB)
 
 #### Locale Names Demo 🌍
 **Estimated Effort:** 1-2 days
@@ -482,7 +500,7 @@ When working on new features:
 **Next Immediate Steps:**
 1. ✅ Complete Phase 1 MVP (DONE)
 2. ✅ Implement Dates & Times demo with native formatter (DONE)
-3. 🎯 Choose next Phase 2 feature to implement (Currency or Locale Names)
-4. 📝 Create detailed implementation plan for chosen feature
+3. ✅ Implement Currency demo with searchable list (DONE)
+4. 🎯 Implement Locale Names demo (Next Priority)
 5. 🧪 Set up integration testing with Playwright
 6. 🚀 Deploy to production (Vercel)
