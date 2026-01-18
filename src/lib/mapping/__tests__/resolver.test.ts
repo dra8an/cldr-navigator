@@ -183,4 +183,86 @@ describe('Mapping Resolver', () => {
       expect(result.xmlFile).toBe('common/main/de.xml')
     })
   })
+
+  describe('Date/Time XPath Mappings', () => {
+    it('should resolve month name paths', () => {
+      const result = resolveXPath('dates.calendars.gregorian.months.format.wide.1', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='1']"
+      )
+    })
+
+    it('should resolve abbreviated month name paths', () => {
+      const result = resolveXPath('dates.calendars.gregorian.months.format.abbreviated.6', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='6']"
+      )
+    })
+
+    it('should resolve day name paths', () => {
+      const result = resolveXPath('dates.calendars.gregorian.days.format.wide.mon', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='wide']/day[@type='mon']"
+      )
+    })
+
+    it('should resolve abbreviated day name paths', () => {
+      const result = resolveXPath('dates.calendars.gregorian.days.format.abbreviated.fri', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='abbreviated']/day[@type='fri']"
+      )
+    })
+
+    it('should resolve day period paths', () => {
+      const result = resolveXPath('dates.calendars.gregorian.dayPeriods.format.wide.am', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/dayPeriods/dayPeriodContext[@type='format']/dayPeriodWidth[@type='wide']/dayPeriod[@type='am']"
+      )
+    })
+
+    it('should resolve noon and midnight day period paths', () => {
+      const resultNoon = resolveXPath('dates.calendars.gregorian.dayPeriods.format.wide.noon', 'en')
+      expect(resultNoon.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/dayPeriods/dayPeriodContext[@type='format']/dayPeriodWidth[@type='wide']/dayPeriod[@type='noon']"
+      )
+
+      const resultMidnight = resolveXPath('dates.calendars.gregorian.dayPeriods.format.wide.midnight', 'en')
+      expect(resultMidnight.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/dayPeriods/dayPeriodContext[@type='format']/dayPeriodWidth[@type='wide']/dayPeriod[@type='midnight']"
+      )
+    })
+
+    it('should resolve era paths', () => {
+      const result = resolveXPath('dates.calendars.gregorian.eras.eraAbbr.0', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/eras/eraAbbr/era[@type='0']"
+      )
+    })
+
+    it('should resolve dateTime format paths', () => {
+      const result = resolveXPath('dates.calendars.gregorian.dateTimeFormats.full', 'en')
+      expect(result.xpath).toBe(
+        "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/dateTimeFormatLength[@type='full']/dateTimeFormat/pattern"
+      )
+    })
+
+    it('should resolve all month numbers (1-12)', () => {
+      for (let month = 1; month <= 12; month++) {
+        const result = resolveXPath(`dates.calendars.gregorian.months.format.wide.${month}`, 'en')
+        expect(result.xpath).toBe(
+          `//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='${month}']`
+        )
+      }
+    })
+
+    it('should resolve all day names', () => {
+      const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+      days.forEach(day => {
+        const result = resolveXPath(`dates.calendars.gregorian.days.format.wide.${day}`, 'en')
+        expect(result.xpath).toBe(
+          `//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='wide']/day[@type='${day}']`
+        )
+      })
+    })
+  })
 })

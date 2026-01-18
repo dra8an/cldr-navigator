@@ -79,6 +79,164 @@ const PRECOMPUTED_MAPPINGS: Record<string, Omit<XmlSourceMapping, 'xmlFile'>> = 
   'dates.calendars.gregorian.timeFormats.short': {
     xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/timeFormats/timeFormatLength[@type='short']/timeFormat/pattern",
   },
+
+  // Month names - Format.Wide
+  'dates.calendars.gregorian.months.format.wide.1': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='1']",
+  },
+  'dates.calendars.gregorian.months.format.wide.2': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='2']",
+  },
+  'dates.calendars.gregorian.months.format.wide.3': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='3']",
+  },
+  'dates.calendars.gregorian.months.format.wide.4': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='4']",
+  },
+  'dates.calendars.gregorian.months.format.wide.5': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='5']",
+  },
+  'dates.calendars.gregorian.months.format.wide.6': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='6']",
+  },
+  'dates.calendars.gregorian.months.format.wide.7': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='7']",
+  },
+  'dates.calendars.gregorian.months.format.wide.8': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='8']",
+  },
+  'dates.calendars.gregorian.months.format.wide.9': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='9']",
+  },
+  'dates.calendars.gregorian.months.format.wide.10': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='10']",
+  },
+  'dates.calendars.gregorian.months.format.wide.11': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='11']",
+  },
+  'dates.calendars.gregorian.months.format.wide.12': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='12']",
+  },
+
+  // Month names - Format.Abbreviated
+  'dates.calendars.gregorian.months.format.abbreviated.1': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='1']",
+  },
+  'dates.calendars.gregorian.months.format.abbreviated.2': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='2']",
+  },
+  'dates.calendars.gregorian.months.format.abbreviated.3': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='3']",
+  },
+  'dates.calendars.gregorian.months.format.abbreviated.4': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='4']",
+  },
+  'dates.calendars.gregorian.months.format.abbreviated.5': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='5']",
+  },
+  'dates.calendars.gregorian.months.format.abbreviated.6': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='6']",
+  },
+  'dates.calendars.gregorian.months.format.abbreviated.7': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='7']",
+  },
+  'dates.calendars.gregorian.months.format.abbreviated.8': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='8']",
+  },
+  'dates.calendars.gregorian.months.format.abbreviated.9': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='9']",
+  },
+  'dates.calendars.gregorian.months.format.abbreviated.10': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='10']",
+  },
+  'dates.calendars.gregorian.months.format.abbreviated.11': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='11']",
+  },
+  'dates.calendars.gregorian.months.format.abbreviated.12': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='12']",
+  },
+
+  // Day names - Format.Wide
+  'dates.calendars.gregorian.days.format.wide.sun': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='wide']/day[@type='sun']",
+  },
+  'dates.calendars.gregorian.days.format.wide.mon': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='wide']/day[@type='mon']",
+  },
+  'dates.calendars.gregorian.days.format.wide.tue': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='wide']/day[@type='tue']",
+  },
+  'dates.calendars.gregorian.days.format.wide.wed': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='wide']/day[@type='wed']",
+  },
+  'dates.calendars.gregorian.days.format.wide.thu': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='wide']/day[@type='thu']",
+  },
+  'dates.calendars.gregorian.days.format.wide.fri': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='wide']/day[@type='fri']",
+  },
+  'dates.calendars.gregorian.days.format.wide.sat': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='wide']/day[@type='sat']",
+  },
+
+  // Day names - Format.Abbreviated
+  'dates.calendars.gregorian.days.format.abbreviated.sun': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='abbreviated']/day[@type='sun']",
+  },
+  'dates.calendars.gregorian.days.format.abbreviated.mon': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='abbreviated']/day[@type='mon']",
+  },
+  'dates.calendars.gregorian.days.format.abbreviated.tue': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='abbreviated']/day[@type='tue']",
+  },
+  'dates.calendars.gregorian.days.format.abbreviated.wed': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='abbreviated']/day[@type='wed']",
+  },
+  'dates.calendars.gregorian.days.format.abbreviated.thu': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='abbreviated']/day[@type='thu']",
+  },
+  'dates.calendars.gregorian.days.format.abbreviated.fri': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='abbreviated']/day[@type='fri']",
+  },
+  'dates.calendars.gregorian.days.format.abbreviated.sat': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='abbreviated']/day[@type='sat']",
+  },
+
+  // Day periods
+  'dates.calendars.gregorian.dayPeriods.format.wide.am': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/dayPeriods/dayPeriodContext[@type='format']/dayPeriodWidth[@type='wide']/dayPeriod[@type='am']",
+  },
+  'dates.calendars.gregorian.dayPeriods.format.wide.pm': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/dayPeriods/dayPeriodContext[@type='format']/dayPeriodWidth[@type='wide']/dayPeriod[@type='pm']",
+  },
+  'dates.calendars.gregorian.dayPeriods.format.wide.midnight': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/dayPeriods/dayPeriodContext[@type='format']/dayPeriodWidth[@type='wide']/dayPeriod[@type='midnight']",
+  },
+  'dates.calendars.gregorian.dayPeriods.format.wide.noon': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/dayPeriods/dayPeriodContext[@type='format']/dayPeriodWidth[@type='wide']/dayPeriod[@type='noon']",
+  },
+
+  // Eras
+  'dates.calendars.gregorian.eras.eraAbbr.0': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/eras/eraAbbr/era[@type='0']",
+  },
+  'dates.calendars.gregorian.eras.eraAbbr.1': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/eras/eraAbbr/era[@type='1']",
+  },
+
+  // DateTime formats
+  'dates.calendars.gregorian.dateTimeFormats.full': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/dateTimeFormatLength[@type='full']/dateTimeFormat/pattern",
+  },
+  'dates.calendars.gregorian.dateTimeFormats.long': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/dateTimeFormatLength[@type='long']/dateTimeFormat/pattern",
+  },
+  'dates.calendars.gregorian.dateTimeFormats.medium': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/dateTimeFormatLength[@type='medium']/dateTimeFormat/pattern",
+  },
+  'dates.calendars.gregorian.dateTimeFormats.short': {
+    xpath: "//ldml/dates/calendars/calendar[@type='gregorian']/dateTimeFormats/dateTimeFormatLength[@type='short']/dateTimeFormat/pattern",
+  },
 }
 
 /**

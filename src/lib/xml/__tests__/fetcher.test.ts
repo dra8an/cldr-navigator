@@ -334,5 +334,151 @@ describe('XML Fetcher Utilities', () => {
         expect(lines.length).toBeLessThanOrEqual(1)
       })
     })
+
+    describe('Multiple calendar support - Regression test for calendar disambiguation bug', () => {
+      // This test mimics the real CLDR XML structure where multiple calendars
+      // exist in the same file, with Chinese calendar appearing BEFORE Gregorian.
+      // The bug: searching for Gregorian months would find Chinese months instead.
+      const xmlWithMultipleCalendars = `
+<ldml>
+  <dates>
+    <calendars>
+      <calendar type="chinese">
+        <months>
+          <monthContext type="format">
+            <monthWidth type="abbreviated">
+              <month type="1">Mo1</month>
+              <month type="2">Mo2</month>
+            </monthWidth>
+            <monthWidth type="wide">
+              <month type="1">First Month</month>
+              <month type="2">Second Month</month>
+              <month type="3">Third Month</month>
+            </monthWidth>
+          </monthContext>
+        </months>
+        <days>
+          <dayContext type="format">
+            <dayWidth type="wide">
+              <day type="sun">Chinese Sunday</day>
+              <day type="mon">Chinese Monday</day>
+            </dayWidth>
+          </dayContext>
+        </days>
+      </calendar>
+      <calendar type="gregorian">
+        <months>
+          <monthContext type="format">
+            <monthWidth type="abbreviated">
+              <month type="1">Jan</month>
+              <month type="2">Feb</month>
+            </monthWidth>
+            <monthWidth type="wide">
+              <month type="1">January</month>
+              <month type="2">February</month>
+              <month type="3">March</month>
+            </monthWidth>
+          </monthContext>
+        </months>
+        <days>
+          <dayContext type="format">
+            <dayWidth type="wide">
+              <day type="sun">Sunday</day>
+              <day type="mon">Monday</day>
+            </dayWidth>
+          </dayContext>
+        </days>
+      </calendar>
+    </calendars>
+  </dates>
+</ldml>
+      `.trim()
+
+      it('should find Gregorian month names, NOT Chinese month names', () => {
+        const result = extractXmlSnippet(
+          xmlWithMultipleCalendars,
+          "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='1']"
+        )
+
+        // CRITICAL: Must find "January", not "First Month"
+        expect(result.snippet).toContain('January')
+        expect(result.snippet).not.toContain('First Month')
+        expect(result.snippet).not.toContain('Chinese')
+      })
+
+      it('should find Gregorian abbreviated months correctly', () => {
+        const result = extractXmlSnippet(
+          xmlWithMultipleCalendars,
+          "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='abbreviated']/month[@type='1']"
+        )
+
+        expect(result.snippet).toContain('Jan')
+        expect(result.snippet).not.toContain('Mo1')
+      })
+
+      it('should find Gregorian day names, NOT Chinese day names', () => {
+        const result = extractXmlSnippet(
+          xmlWithMultipleCalendars,
+          "//ldml/dates/calendars/calendar[@type='gregorian']/days/dayContext[@type='format']/dayWidth[@type='wide']/day[@type='sun']"
+        )
+
+        expect(result.snippet).toContain('Sunday')
+        expect(result.snippet).not.toContain('Chinese Sunday')
+      })
+
+      it('should correctly find month type 2 (February)', () => {
+        const result = extractXmlSnippet(
+          xmlWithMultipleCalendars,
+          "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='2']"
+        )
+
+        expect(result.snippet).toContain('February')
+        expect(result.snippet).not.toContain('Second Month')
+      })
+
+      it('should correctly find month type 3 (March)', () => {
+        const result = extractXmlSnippet(
+          xmlWithMultipleCalendars,
+          "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='3']"
+        )
+
+        expect(result.snippet).toContain('March')
+        expect(result.snippet).not.toContain('Third Month')
+      })
+
+      it('should be able to find Chinese calendar when explicitly requested', () => {
+        const result = extractXmlSnippet(
+          xmlWithMultipleCalendars,
+          "//ldml/dates/calendars/calendar[@type='chinese']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='1']"
+        )
+
+        expect(result.snippet).toContain('First Month')
+        expect(result.snippet).not.toContain('January')
+      })
+
+      it('should return different line numbers for Chinese vs Gregorian calendar months', () => {
+        const chineseMonth = extractXmlSnippet(
+          xmlWithMultipleCalendars,
+          "//ldml/dates/calendars/calendar[@type='chinese']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='1']"
+        )
+        const gregorianMonth = extractXmlSnippet(
+          xmlWithMultipleCalendars,
+          "//ldml/dates/calendars/calendar[@type='gregorian']/months/monthContext[@type='format']/monthWidth[@type='wide']/month[@type='1']"
+        )
+
+        expect(chineseMonth.lineNumber).toBeDefined()
+        expect(gregorianMonth.lineNumber).toBeDefined()
+
+        // Line numbers should be different
+        expect(chineseMonth.lineNumber).not.toBe(gregorianMonth.lineNumber)
+
+        // Chinese calendar appears first, so should have lower line number
+        expect(chineseMonth.lineNumber).toBeLessThan(gregorianMonth.lineNumber!)
+
+        // Verify content is different
+        expect(chineseMonth.snippet).toContain('First Month')
+        expect(gregorianMonth.snippet).toContain('January')
+      })
+    })
   })
 })

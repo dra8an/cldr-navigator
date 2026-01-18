@@ -107,6 +107,23 @@ export interface CldrDates {
           wide?: { [key: string]: string }
         }
       }
+      dayPeriods?: {
+        format?: {
+          abbreviated?: { [key: string]: string }
+          narrow?: { [key: string]: string }
+          wide?: { [key: string]: string }
+        }
+        'stand-alone'?: {
+          abbreviated?: { [key: string]: string }
+          narrow?: { [key: string]: string }
+          wide?: { [key: string]: string }
+        }
+      }
+      eras?: {
+        eraNames?: { [key: string]: string }
+        eraAbbr?: { [key: string]: string }
+        eraNarrow?: { [key: string]: string }
+      }
       dateFormats?: {
         full?: string
         long?: string

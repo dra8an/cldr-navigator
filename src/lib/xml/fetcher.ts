@@ -102,9 +102,9 @@ export function extractXmlSnippet(
     }
   }
 
-  // Search for parent elements from most specific to least specific
-  // This progressively narrows the search scope
-  for (let i = keyElements.length - 2; i >= 0; i--) {
+  // Search for parent elements from root to leaf (FORWARD)
+  // This progressively narrows the search scope by following the path
+  for (let i = 0; i < keyElements.length - 1; i++) {
     const key = keyElements[i]
     const foundIndex = lines.findIndex((line, idx) => {
       if (idx < searchStartLine || idx >= searchEndLine) return false
@@ -127,7 +127,7 @@ export function extractXmlSnippet(
       if (endIndex !== -1) {
         searchEndLine = endIndex + 1
       }
-      // Don't break - continue narrowing through all parent levels
+      // Continue narrowing through all parent levels in order
     }
   }
 

@@ -8,6 +8,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Dates & Times Demo Page** (2026-01-17)
+  - Full implementation of date/time localization demo at `/dates`
+  - Month names display (wide and abbreviated formats)
+  - Day names display (wide and abbreviated formats)
+  - Date format patterns (full, long, medium, short) with live examples
+  - Time format patterns (full, long, medium, short) with live examples
+  - Day periods section (AM, PM, midnight, noon)
+  - Interactive date/time formatter with datetime-local input
+  - All data points linked to CLDR XML sources via SourceBadge
+  - Responsive grid layout matching NumbersPage design
+  - User note explaining Gregorian calendar focus
+  - **48 new XPath mappings** for date/time data structures
+  - TypeScript type definitions for `dayPeriods` and `eras`
+  - Navigation enabled in sidebar (removed "Soon" badge)
+  - Routing configured in App.tsx
+
+- **Comprehensive Test Coverage for Calendar Disambiguation** (2026-01-17)
+  - 7 new regression tests specifically for multi-calendar XML files
+  - Tests verify Gregorian vs Chinese calendar data extraction
+  - Tests ensure different calendars return different line numbers
+  - Total test count increased from 72 to 79 tests
+  - Documentation: `Docs/BUG-FIX-CALENDAR-XPATH.md`
+
 - **PROJECT-STATUS.md** - Comprehensive project status tracking document
   - Current status: Phase 1 MVP complete
   - Detailed roadmap for Phase 2 (Dates, Currency, Locale Names demos)
@@ -17,6 +40,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Development workflow guide
 
 ### Fixed
+- **Calendar XPath Disambiguation Bug** (2026-01-17)
+  - Issue: Month/day name source badges showed Chinese calendar data instead of Gregorian
+  - Symptom: Clicking "January" source showed "First Month" (Chinese calendar)
+  - Root cause: `extractXmlSnippet` searched backwards (leaf→root), finding first occurrence
+  - Chinese calendar appears at ~line 1816, Gregorian at ~line 2437 in CLDR XML
+  - Fix: Changed search direction to forward (root→leaf) in `src/lib/xml/fetcher.ts`
+  - Algorithm now:
+    1. Starts from root of XPath
+    2. Finds `calendar[@type='gregorian']` first
+    3. Narrows scope to within that calendar's closing tag
+    4. Then searches for child elements only within correct calendar
+  - Impact: All date/time source links now correctly point to Gregorian calendar data
+  - Verification: 7 new regression tests ensure bug won't recur
+  - Line numbers now accurately reflect calendar-specific data locations
+
 - **Number Format Pattern Extraction** (2026-01-17)
   - Issue: All format types (decimal, percent, currency, scientific) pointed to the same XML line (decimal pattern)
   - Root cause: XML extraction algorithm stopped narrowing scope after finding first parent match
@@ -69,10 +107,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Testing Infrastructure
 - Vitest test runner with jsdom environment
-- 62 comprehensive unit tests across 3 test suites
+- 79 comprehensive unit tests across 3 test suites
 - Test coverage for:
-  - XML snippet extraction (22 tests)
-  - JSON-to-XPath mapping (23 tests)
+  - XML snippet extraction (29 tests, including 7 calendar regression tests)
+  - JSON-to-XPath mapping (33 tests, including date/time mappings)
   - Locale normalization (17 tests)
 - Test scripts: `test`, `test:run`, `test:coverage`, `test:ui`
 - Verification script for full CI/CD pipeline
@@ -125,9 +163,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Testing**: Vitest 2.1.8, Testing Library, jsdom
 
 #### Bundle Size
-- Production bundle: ~1.2MB (286KB gzipped)
-- Initial load: 286KB gzipped
-- Target met: < 300KB (plan specified < 300KB)
+- Production bundle: ~1.23MB (288.84KB gzipped)
+- Initial load: 288.84KB gzipped
+- Target met: < 300KB ✓ (plan specified < 300KB)
 
 #### Performance
 - TanStack Query: 24-hour cache for CLDR data
@@ -144,10 +182,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Known Issues
 - Only 14 common locales currently supported (out of 500+ in CLDR)
   - Future: Add dynamic import support for all locales
-- Dates, currencies, and other demos not yet implemented
-  - Planned for Phase 2
+- Date/time demo only supports Gregorian calendar
+  - CLDR includes Chinese, Hebrew, Islamic, and other calendars
+  - Future: Add calendar selector UI
+- Currencies and other demos not yet implemented
+  - Currencies, locale names, plural rules planned for Phase 2
 - No comparison mode yet
-  - Planned for Phase 2
+  - Side-by-side locale comparison planned for Phase 2
+- Date/time demo missing advanced features:
+  - Available formats (additional format patterns)
+  - Interval formats (date range formatting)
 
 ### Dependencies
 
@@ -203,7 +247,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Future Releases
 
 ### [0.1.0] - Planned (Phase 2)
-- Dates & Times demo
+- ✅ Dates & Times demo (Gregorian calendar)
+- Calendar selector (Chinese, Hebrew, Islamic, etc.)
+- Available formats and interval formats for dates
 - Currency demo
 - Locale names demo
 - Comparison mode (side-by-side locales)
