@@ -31,7 +31,8 @@
       "Bash(done)",
       "WebFetch(domain:formatjs.github.io)",
       "WebFetch(domain:messageformat.github.io)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(grep:*)"
     ]
   }
 }

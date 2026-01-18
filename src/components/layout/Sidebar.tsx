@@ -8,13 +8,18 @@ import {
   ListOrdered,
 } from 'lucide-react'
 
-const navItems = [
+const navItems: Array<{
+  to: string
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  disabled?: boolean
+}> = [
   { to: '/', icon: Home, label: 'Home' },
   { to: '/numbers', icon: Hash, label: 'Numbers' },
   { to: '/dates', icon: Calendar, label: 'Dates & Times' },
   { to: '/currency', icon: DollarSign, label: 'Currency' },
   { to: '/locale-names', icon: Globe2, label: 'Locale Names' },
-  { to: '/plurals', icon: ListOrdered, label: 'Plural Rules', disabled: true },
+  { to: '/plural-rules', icon: ListOrdered, label: 'Plural Rules' },
 ]
 
 export default function Sidebar() {

@@ -5,6 +5,8 @@ import {
   loadDateData,
   loadCurrencyData,
   loadLocaleDisplayNames,
+  loadPluralRules,
+  loadPluralRanges,
   getCldrValue,
 } from '@/lib/cldr/loader'
 
@@ -80,4 +82,33 @@ export function useCurrencyData(locale: LocaleCode) {
  */
 export function useLocaleNames(locale: LocaleCode) {
   return useCldrData(locale, 'localeNames')
+}
+
+/**
+ * Hook to load plural rules for a locale
+ */
+export function usePluralRules(
+  locale: LocaleCode,
+  type: 'cardinal' | 'ordinal' = 'cardinal'
+) {
+  return useQuery({
+    queryKey: ['cldr-plural-rules', locale, type],
+    queryFn: async () => {
+      return await loadPluralRules(locale, type)
+    },
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours
+  })
+}
+
+/**
+ * Hook to load plural ranges for a locale
+ */
+export function usePluralRanges(locale: LocaleCode) {
+  return useQuery({
+    queryKey: ['cldr-plural-ranges', locale],
+    queryFn: async () => {
+      return await loadPluralRanges(locale)
+    },
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours
+  })
 }

@@ -112,6 +112,73 @@ export async function loadCurrencyData(locale: LocaleCode): Promise<CldrData> {
 }
 
 /**
+ * Loads CLDR plural rules data for a locale
+ */
+export async function loadPluralRules(
+  locale: LocaleCode,
+  type: 'cardinal' | 'ordinal' = 'cardinal'
+): Promise<unknown> {
+  const normalizedLocale = normalizeLocaleForCldr(locale)
+  const cacheKey = `plurals-${type}-${normalizedLocale}`
+
+  if (!cldrCache.has(cacheKey)) {
+    const pluralsData = type === 'cardinal'
+      ? localeData.core.plurals
+      : localeData.core.ordinals
+
+    const sourceData = pluralsData as unknown as { supplemental: Record<string, Record<string, unknown>> }
+    const localeRules = sourceData.supplemental[`plurals-type-${type}`][normalizedLocale]
+
+    const data = {
+      supplemental: {
+        [`plurals-type-${type}`]: {
+          [normalizedLocale]: localeRules
+        }
+      }
+    }
+
+    if (!localeRules) {
+      throw new Error(`CLDR ${type} plural rules not found for locale: ${normalizedLocale}`)
+    }
+
+    const loadPromise = Promise.resolve(data)
+    cldrCache.set(cacheKey, loadPromise)
+  }
+
+  return cldrCache.get(cacheKey) as Promise<unknown>
+}
+
+/**
+ * Loads CLDR plural ranges data for a locale
+ */
+export async function loadPluralRanges(locale: LocaleCode): Promise<unknown> {
+  const normalizedLocale = normalizeLocaleForCldr(locale)
+  const cacheKey = `plural-ranges-${normalizedLocale}`
+
+  if (!cldrCache.has(cacheKey)) {
+    const rangesData = localeData.core.pluralRanges as unknown as { supplemental: { plurals: Record<string, unknown> } }
+    const localeRanges = rangesData.supplemental.plurals[normalizedLocale]
+
+    const data = {
+      supplemental: {
+        plurals: {
+          [normalizedLocale]: localeRanges
+        }
+      }
+    }
+
+    if (!localeRanges) {
+      throw new Error(`CLDR plural ranges not found for locale: ${normalizedLocale}`)
+    }
+
+    const loadPromise = Promise.resolve(data)
+    cldrCache.set(cacheKey, loadPromise)
+  }
+
+  return cldrCache.get(cacheKey) as Promise<unknown>
+}
+
+/**
  * Gets a value from CLDR data using a JSON path
  * Example: getCldrValue(data, 'main.en.numbers.symbols-numberSystem-latn.decimal')
  */

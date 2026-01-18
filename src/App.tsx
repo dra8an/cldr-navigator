@@ -5,6 +5,7 @@ import NumbersPage from './pages/NumbersPage'
 import DatesPage from './pages/DatesPage'
 import CurrencyPage from './pages/CurrencyPage'
 import LocaleNamesPage from './pages/LocaleNamesPage'
+import PluralRulesPage from './pages/PluralRulesPage'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="dates" element={<DatesPage />} />
           <Route path="currency" element={<CurrencyPage />} />
           <Route path="locale-names" element={<LocaleNamesPage />} />
+          <Route path="plural-rules" element={<PluralRulesPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

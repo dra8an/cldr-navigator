@@ -131,6 +131,9 @@ import plVariants from 'cldr-localenames-full/main/pl/variants.json'
 
 // Core data
 import availableLocales from 'cldr-core/availableLocales.json'
+import pluralsData from 'cldr-core/supplemental/plurals.json'
+import ordinalsData from 'cldr-core/supplemental/ordinals.json'
+import pluralRangesData from 'cldr-core/supplemental/pluralRanges.json'
 
 /**
  * Helper function to merge separate locale names files into a single object
@@ -224,5 +227,8 @@ export const localeData = {
   },
   core: {
     availableLocales,
+    plurals: pluralsData,
+    ordinals: ordinalsData,
+    pluralRanges: pluralRangesData,
   },
 }

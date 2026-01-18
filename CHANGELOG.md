@@ -8,6 +8,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Plural Rules Demo Page** (2026-01-18)
+  - Comprehensive plural rules demo at `/plural-rules`
+  - Two-tab navigation: Cardinal (quantity) and Ordinal (position/ranking)
+  - **Cardinal plural rules** with 6 categories: zero, one, two, few, many, other
+  - **Ordinal plural rules** with position-based categories (1st, 2nd, 3rd, etc.)
+  - Rule display showing CLDR expressions (e.g., "n = 1", "n % 10 = 1 and n % 100 != 11")
+  - Interactive "Try It Yourself" section with number input and category detection
+  - **Practical examples** showing real-world usage:
+    - Cardinal: "1 apple", "5 apples", "1 item", "3 items"
+    - Ordinal: "1st place", "22nd floor", "3rd position", "100th day"
+  - Native `Intl.PluralRules` integration for accurate category detection
+  - Full SourceBadge integration for all plural rule data
+  - Plural ranges support display (e.g., "1-2 items", "5-10 items")
+  - Coverage across all 14 supported locales
+  - Files: `src/pages/PluralRulesPage.tsx`
+
+- **Plural Rules Data Loading** (2026-01-18)
+  - Added CLDR plurals.json, ordinals.json, and pluralRanges.json imports
+  - Created `loadPluralRules()` function with cardinal/ordinal type parameter
+  - Created `loadPluralRanges()` function for plural range resolution
+  - Added `usePluralRules()` and `usePluralRanges()` React Query hooks
+  - 24-hour caching for plural rules data
+  - Files: `src/lib/cldr/loader.ts`, `src/lib/cldr/locale-data.ts`, `src/hooks/useCldrData.ts`
+
+- **Enhanced Plural Rules Examples** (2026-01-18)
+  - Added `getCardinalExample()` function generating quantity-based examples
+  - Added `getOrdinalExample()` function generating position-based examples with proper suffixes
+  - Example grid display (2x2 layout) showing 4 contextual examples per number
+  - Dynamic updates based on entered number value
+  - Locale-aware suffix generation for ordinal numbers (1st, 2nd, 3rd, 4th, etc.)
+  - User-friendly explanations of cardinal vs ordinal number usage
 - **Currency Demo Page** (2026-01-17)
   - Comprehensive currency localization demo at `/currency`
   - Four-tab navigation: Overview, Major Currencies, All Currencies, Try It Yourself
@@ -243,6 +274,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Source buttons on every data point
   - 4-tab navigation structure
 
+- **Plural Rules Demo** (Phase 2)
+  - Cardinal and ordinal plural rules for all locales
+  - Interactive category detection with live examples
+  - Practical examples showing real-world usage
+  - Full CLDR rule expressions display
+  - Plural ranges support
+  - 2-tab navigation structure
+
 #### UI Components
 - Responsive layout with header, sidebar, and footer
 - Locale selector with 15 common locales and recent history
@@ -256,10 +295,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Testing Infrastructure
 - Vitest test runner with jsdom environment
-- 117 comprehensive unit tests across 4 test suites
+- 117 comprehensive unit tests across 4 test suites (all passing)
 - Test coverage for:
   - XML snippet extraction (29 tests, including 7 calendar regression tests)
-  - JSON-to-XPath mapping (59 tests, including date/time, currency, and locale names mappings)
+  - JSON-to-XPath mapping (77 tests, including date/time, currency, locale names, and plural rules mappings)
   - Locale normalization (17 tests)
   - Skeleton formatter (12 tests, including unsupported pattern detection)
 - Test scripts: `test`, `test:run`, `test:coverage`, `test:ui`
@@ -313,10 +352,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Testing**: Vitest 2.1.8, Testing Library, jsdom
 
 #### Bundle Size
-- Production bundle: ~1.43MB (362.79KB gzipped)
-- Initial load: 362.79KB gzipped
-- Note: Exceeds original 300KB target due to complete locale names data (68.75KB increase)
-- Includes complete data for 700+ languages, 325+ territories, 220+ scripts, 60+ variants across 14 locales
+- Production bundle: ~1.53MB (370.60KB gzipped)
+- Initial load: 370.60KB gzipped
+- Note: Exceeds original 300KB target due to complete data loading
+  - Locale names data: +68.75KB (700+ languages, 325+ territories, 220+ scripts, 60+ variants)
+  - Plural rules data: +7.58KB (cardinal, ordinal, plural ranges)
 - Previous optimizations: **32.5 KB reduction** from native skeleton formatter vs @formatjs approach
 
 #### Performance
@@ -337,12 +377,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Date/time demo only supports Gregorian calendar
   - CLDR includes Chinese, Hebrew, Islamic, and other calendars
   - Future: Add calendar selector UI
-- Plural rules demo not yet implemented
-  - Planned for Phase 2
 - No comparison mode yet
-  - Side-by-side locale comparison planned for Phase 2
-- **Bundle size exceeds 300KB target** (362.79KB gzipped)
+  - Side-by-side locale comparison planned for Phase 2/3
+- **Bundle size exceeds 300KB target** (370.60KB gzipped)
   - Caused by loading complete locale names data for all 14 locales (42 additional JSON files)
+  - Caused by loading plural rules data (plurals, ordinals, plural ranges)
   - Trade-off: Complete data coverage vs bundle size
   - Future: Consider code splitting or lazy loading strategies
 - Some CLDR skeleton patterns not supported by native Intl
@@ -407,8 +446,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✅ Dates & Times demo (Gregorian calendar)
 - ✅ Currency demo (300+ currencies)
 - ✅ Locale names demo (languages, territories, scripts, variants)
+- ✅ Plural rules demo (cardinal and ordinal with practical examples)
 - Calendar selector (Chinese, Hebrew, Islamic, etc.)
-- Available formats and interval formats for dates
 - Comparison mode (side-by-side locales)
 - Enhanced XML viewer with syntax highlighting
 - Bundle size optimization (code splitting, lazy loading)
