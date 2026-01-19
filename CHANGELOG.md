@@ -8,6 +8,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Text Segmentation Demo Page** (2026-01-19)
+  - Comprehensive text segmentation demo at `/segmentation`
+  - Three-tab navigation: Word Breaks, Sentence Breaks, Character Breaks
+  - **Word segmentation** - splits text at word boundaries, essential for CJK languages
+  - **Sentence segmentation** - handles abbreviations (Dr., Mr.) and edge cases
+  - **Grapheme (character) segmentation** - correctly handles emoji and combining characters
+  - Interactive text input with locale-aware sample texts
+  - Visual segment display with color-coded boundaries (word-like vs non-word)
+  - Segment statistics (total count, word count, non-word count)
+  - **13 complex script examples** with clickable buttons:
+    - 🇬🇧 English (abbreviations, punctuation edge cases)
+    - 🇹🇭 Thai (news, proverb, Thai numerals) - no spaces between words
+    - 🇯🇵 Japanese (mixed scripts, technical, literature, emoji)
+    - 🇸🇦 Arabic (news, poetry, technical, Quranic with diacritics) - RTL
+    - 🇨🇳 Chinese (technical with abbreviations)
+    - 🇰🇷 Korean (mixed with Latin characters)
+  - **Translations** shown below segmentation results for non-English examples
+  - **RTL support** - Arabic segments display RTL, English translations display LTR
+  - JavaScript code examples with copy-to-clipboard (word counting, grapheme length, sentence splitting)
+  - Links to CLDR segments XML source files on GitHub
+  - Browser support information (94% global support)
+  - Native `Intl.Segmenter` integration - zero external dependencies
+  - Files: `src/pages/SegmentationPage.tsx`
+
+- **Intl.Segmenter TypeScript Declarations** (2026-01-19)
+  - Added TypeScript type declarations for `Intl.Segmenter` API
+  - Includes `SegmenterOptions`, `SegmentData`, and `Segments` interfaces
+  - Files: `src/types/intl-segmenter.d.ts`
+
 - **"Using with JavaScript" Code Examples** (2026-01-18)
   - Added terminal-style code examples to all demo pages with "Try It Yourself" sections
   - **Terminal-style presentation:** Dark background (slate-950) with green text (classic terminal aesthetic)
@@ -19,10 +48,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Available Formats tab: Custom format options with year/month and weekday
     - Intervals tab: Date range and time range formatting
   - **PluralRulesPage:** Examples for cardinal and ordinal plural category detection
+  - **SegmentationPage:** Examples for word counting, grapheme length, sentence splitting
   - All examples show live output based on current locale and user input
   - Floating copy button in top-right corner of each code block
   - Hover effects and smooth transitions for better UX
-  - Files: `src/pages/NumbersPage.tsx`, `src/pages/CurrencyPage.tsx`, `src/pages/DatesPage.tsx`, `src/pages/PluralRulesPage.tsx`
+  - Files: `src/pages/NumbersPage.tsx`, `src/pages/CurrencyPage.tsx`, `src/pages/DatesPage.tsx`, `src/pages/PluralRulesPage.tsx`, `src/pages/SegmentationPage.tsx`
 
 - **Plural Rules Demo Page** (2026-01-18)
   - Comprehensive plural rules demo at `/plural-rules`
@@ -306,6 +336,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Plural ranges support
   - 2-tab navigation structure
 
+- **Text Segmentation Demo** (Phase 2)
+  - Word, sentence, and grapheme segmentation using native `Intl.Segmenter`
+  - 13 complex script examples (Thai, Japanese, Arabic, Chinese, Korean)
+  - Translations shown for non-English examples with RTL support
+  - Interactive text input with visual segment display
+  - Code examples with copy-to-clipboard
+  - Links to CLDR segments XML source files
+  - 3-tab navigation structure
+
 #### UI Components
 - Responsive layout with header, sidebar, and footer
 - Locale selector with 15 common locales and recent history
@@ -376,12 +415,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Testing**: Vitest 2.1.8, Testing Library, jsdom
 
 #### Bundle Size
-- Production bundle: ~1.54MB (372.20KB gzipped)
-- Initial load: 372.20KB gzipped
+- Production bundle: ~1.57MB (379.45KB gzipped)
+- Initial load: 379.45KB gzipped
 - Note: Exceeds original 300KB target due to complete data loading
   - Locale names data: +68.75KB (700+ languages, 325+ territories, 220+ scripts, 60+ variants)
   - Plural rules data: +7.58KB (cardinal, ordinal, plural ranges)
-  - "Using with JavaScript" code examples: +1.60KB (all demo pages)
+  - Segmentation examples: +7.25KB (13 complex script examples with translations)
 - Previous optimizations: **32.5 KB reduction** from native skeleton formatter vs @formatjs approach
 
 #### Performance
@@ -404,10 +443,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Future: Add calendar selector UI
 - No comparison mode yet
   - Side-by-side locale comparison planned for Phase 2/3
-- **Bundle size exceeds 300KB target** (372.20KB gzipped)
+- **Bundle size exceeds 300KB target** (379.45KB gzipped)
   - Caused by loading complete locale names data for all 14 locales (42 additional JSON files)
   - Caused by loading plural rules data (plurals, ordinals, plural ranges)
-  - Caused by "Using with JavaScript" code examples across all demo pages
+  - Caused by segmentation examples with translations (13 complex script examples)
   - Trade-off: Complete data coverage vs bundle size
   - Future: Consider code splitting or lazy loading strategies
 - Some CLDR skeleton patterns not supported by native Intl
@@ -473,6 +512,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✅ Currency demo (300+ currencies)
 - ✅ Locale names demo (languages, territories, scripts, variants)
 - ✅ Plural rules demo (cardinal and ordinal with practical examples)
+- ✅ Text segmentation demo (word, sentence, grapheme with complex script examples)
 - Calendar selector (Chinese, Hebrew, Islamic, etc.)
 - Comparison mode (side-by-side locales)
 - Enhanced XML viewer with syntax highlighting

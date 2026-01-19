@@ -6,6 +6,7 @@ import {
   DollarSign,
   Globe2,
   ListOrdered,
+  Scissors,
 } from 'lucide-react'
 
 const navItems: Array<{
@@ -20,6 +21,7 @@ const navItems: Array<{
   { to: '/currency', icon: DollarSign, label: 'Currency' },
   { to: '/locale-names', icon: Globe2, label: 'Locale Names' },
   { to: '/plural-rules', icon: ListOrdered, label: 'Plural Rules' },
+  { to: '/segmentation', icon: Scissors, label: 'Segmentation' },
 ]
 
 export default function Sidebar() {

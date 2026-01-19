@@ -1,8 +1,8 @@
 # CLDR Navigator - Project Status
 
-**Last Updated:** 2026-01-18
+**Last Updated:** 2026-01-19
 **Current Version:** 0.0.1
-**Status:** Phase 2 Complete - Dates & Times ✅ | Currency ✅ | Locale Names ✅ | Plural Rules ✅
+**Status:** Phase 2 Complete - Dates & Times ✅ | Currency ✅ | Locale Names ✅ | Plural Rules ✅ | Segmentation ✅
 
 ---
 
@@ -101,8 +101,8 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 
 ### Metrics
 
-- **Bundle Size:** 372.20KB gzipped ⚠️ (exceeds 300KB target - locale names +68.75KB, plural rules +7.58KB, code examples +1.60KB)
-- **Build Time:** ~1.7s ✅
+- **Bundle Size:** 379.45KB gzipped ⚠️ (exceeds 300KB target - locale names +68.75KB, plural rules +7.58KB, segmentation +7.25KB)
+- **Build Time:** ~2.7s ✅
 - **Test Coverage:** 117 tests, all passing ✅
 - **Supported Locales:** 14 common locales ✅
 - **Performance:** TanStack Query 24-hour cache ✅
@@ -271,6 +271,50 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 - **+7.58 KB gzipped** (from 362.79KB to 370.60KB)
 - Caused by loading plural rules data (plurals, ordinals, plural ranges)
 
+#### Text Segmentation Demo ✂️ ✅ COMPLETE
+**Actual Effort:** 0.5 days
+**Status:** Fully implemented with native Intl.Segmenter
+
+**Implemented Features:**
+- [x] **Word segmentation** - splits text at word boundaries, essential for CJK languages
+- [x] **Sentence segmentation** - handles abbreviations (Dr., Mr.) and edge cases
+- [x] **Grapheme (character) segmentation** - correctly handles emoji and combining characters
+- [x] **3-tab navigation:** Word Breaks, Sentence Breaks, Character Breaks
+- [x] **Interactive text input** with locale-aware sample texts
+- [x] **Visual segment display** with color-coded boundaries
+- [x] **Segment statistics** (total count, word-like vs non-word segments)
+- [x] **13 complex script examples** for Thai, Japanese, Arabic, Chinese, Korean
+- [x] **Translations** shown below segmentation results for non-English examples
+- [x] **RTL support** - Arabic text displays RTL, translations display LTR
+- [x] **JavaScript code examples** with copy-to-clipboard
+- [x] **Links to CLDR segments XML** source files on GitHub
+- [x] **Browser support information** for Intl.Segmenter
+
+**Implementation Details:**
+- [x] Created `src/pages/SegmentationPage.tsx` with tabbed navigation
+- [x] Added `Intl.Segmenter` TypeScript declarations in `src/types/intl-segmenter.d.ts`
+- [x] Added route `/segmentation` to router
+- [x] Updated sidebar navigation with Scissors icon
+- [x] Updated HomePage with link to segmentation demo
+
+**Complex Script Examples:**
+- 🇬🇧 English (abbreviations, punctuation)
+- 🇹🇭 Thai (news, proverb, Thai numerals) - no spaces between words
+- 🇯🇵 Japanese (mixed scripts, technical, literature, emoji)
+- 🇸🇦 Arabic (news, poetry, technical, Quranic with diacritics) - RTL
+- 🇨🇳 Chinese (technical with abbreviations)
+- 🇰🇷 Korean (mixed with Latin characters)
+
+**Key Technical Achievement:**
+- Native `Intl.Segmenter` integration for accurate text boundary detection
+- Zero external dependencies for segmentation
+- Proper RTL/LTR handling for Arabic with English translations
+- Demonstrates word segmentation for languages without spaces (Thai, Japanese, Chinese)
+
+**Bundle Size Impact:**
+- **+7.25 KB gzipped** (from 372.20KB to 379.45KB)
+- Caused by complex script example texts and translations
+
 ### Priority 2: Enhanced Features
 
 #### "Using with JavaScript" Code Examples ✅ COMPLETE
@@ -284,6 +328,7 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 - [x] **CurrencyPage:** Examples for standard and accounting currency formats
 - [x] **DatesPage:** Three code sections across tabs (Overview, Available Formats, Intervals)
 - [x] **PluralRulesPage:** Examples for cardinal and ordinal plural category detection
+- [x] **SegmentationPage:** Examples for word counting, grapheme length, sentence splitting
 - [x] Live output based on current locale and user input
 - [x] Floating copy button in top-right corner of each code block
 - [x] Hover effects and smooth transitions
@@ -292,7 +337,7 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 - [x] Added Copy and Check icons from lucide-react
 - [x] Implemented copyToClipboard() functions with timeout
 - [x] Created terminal-style code blocks with <pre> tags
-- [x] Files: `src/pages/NumbersPage.tsx`, `src/pages/CurrencyPage.tsx`, `src/pages/DatesPage.tsx`, `src/pages/PluralRulesPage.tsx`
+- [x] Files: `src/pages/NumbersPage.tsx`, `src/pages/CurrencyPage.tsx`, `src/pages/DatesPage.tsx`, `src/pages/PluralRulesPage.tsx`, `src/pages/SegmentationPage.tsx`
 
 **Bundle Size Impact:**
 - **+1.60 KB gzipped** (from 370.60KB to 372.20KB)
@@ -442,7 +487,7 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 ## Technical Debt & Improvements
 
 ### High Priority
-- [ ] **Optimize bundle size** - Currently 372.20KB gzipped (exceeds 300KB target by 24%)
+- [ ] **Optimize bundle size** - Currently 379.45KB gzipped (exceeds 300KB target by 26%)
   - Implement code splitting for demo pages
   - Consider lazy loading for locale names data and plural rules data
   - Investigate dynamic imports for less common locales
@@ -473,11 +518,11 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 ### Current Limitations
 1. **Limited Locale Support** - Only 14 common locales (out of 500+ in CLDR)
    - Future: Add dynamic import support for all locales
-2. **Bundle Size Exceeds Target** - 372.20KB gzipped (exceeds 300KB target by 24%)
+2. **Bundle Size Exceeds Target** - 379.45KB gzipped (exceeds 300KB target by 26%)
    - Caused by complete data loading for comprehensive coverage:
      - Locale names data: +68.75KB (700+ languages, 325+ territories, 220+ scripts, 60+ variants)
      - Plural rules data: +7.58KB (cardinal, ordinal, plural ranges)
-     - "Using with JavaScript" code examples: +1.60KB (all demo pages)
+     - Segmentation examples: +7.25KB (13 complex script examples with translations)
    - Trade-off: Complete data coverage vs bundle size
    - Future: Implement code splitting, lazy loading, or on-demand data fetching
 3. **Calendar Support** - Dates demo only supports Gregorian calendar
@@ -501,8 +546,8 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 
 ## Release Planning
 
-### v0.1.0 - Phase 2 Complete (Current Status: 90% Complete)
-- ✅ All core demo categories implemented (Numbers, Dates, Currency, Locale Names, Plural Rules)
+### v0.1.0 - Phase 2 Complete (Current Status: 95% Complete)
+- ✅ All core demo categories implemented (Numbers, Dates, Currency, Locale Names, Plural Rules, Segmentation)
 - ✅ Native Intl integration (zero external dependencies)
 - ✅ Full SourceBadge XML linking
 - ✅ Interactive formatters in all demos
@@ -555,7 +600,7 @@ Interactive CLDR locale data explorer with XML source linking. Every data point 
 ### Documentation
 - [CLDR Documentation](https://cldr.unicode.org/)
 - [CLDR GitHub](https://github.com/unicode-org/cldr)
-- [Implementation Plan](./implementation-plan.md)
+- [Implementation Plan](./IMPLEMENTATION-PLAN.md)
 - [Testing Guide](./TESTING_GUIDE.md)
 
 ### Tools
@@ -588,6 +633,11 @@ When working on new features:
 4. Should we add a blog section? (Future consideration)
 
 ### Recent Decisions
+- ✅ Use native Intl.Segmenter for text segmentation (2026-01-19)
+  - Supports word, sentence, and grapheme segmentation
+  - Handles complex scripts (Thai, Japanese, Arabic, Chinese) without spaces
+  - Zero external dependencies for segmentation
+  - 94% browser support globally
 - ✅ Use native Intl.DateTimeFormat over external libraries (2026-01-17)
   - Investigated ICU4X and @formatjs thoroughly
   - Discovered native Intl supports flexible day periods ('B' field)
@@ -615,7 +665,8 @@ When working on new features:
 3. ✅ Implement Currency demo with searchable list (DONE)
 4. ✅ Implement Locale Names demo (DONE)
 5. ✅ Implement Plural Rules demo with practical examples (DONE)
-6. 🎯 **Phase 2 COMPLETE** - All core demo categories implemented!
-7. 🎯 Optimize bundle size (code splitting, lazy loading) - Top priority for Phase 3
-8. 🧪 Set up integration testing with Playwright
-9. 🚀 Deploy to production (Vercel)
+6. ✅ Implement Text Segmentation demo with complex script examples (DONE)
+7. 🎯 **Phase 2 COMPLETE** - All core demo categories implemented!
+8. 🎯 Optimize bundle size (code splitting, lazy loading) - Top priority for Phase 3
+9. 🧪 Set up integration testing with Playwright
+10. 🚀 Deploy to production (Vercel)

@@ -169,6 +169,22 @@ export default function HomePage() {
               <ArrowRight className="w-5 h-5 text-muted-foreground" />
             </div>
           </Link>
+
+          <Link
+            to="/segmentation"
+            className="block bg-card border rounded-lg p-6 hover:border-primary transition-colors"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold mb-1">Text Segmentation</h3>
+                <p className="text-muted-foreground">
+                  Word, sentence, and character boundary analysis for all
+                  languages
+                </p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-muted-foreground" />
+            </div>
+          </Link>
         </div>
       </div>
 
