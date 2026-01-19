@@ -32,7 +32,8 @@
       "WebFetch(domain:formatjs.github.io)",
       "WebFetch(domain:messageformat.github.io)",
       "Bash(npx tsx:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(git mv:*)"
     ]
   }
 }
