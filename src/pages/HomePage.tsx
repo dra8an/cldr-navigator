@@ -106,39 +106,69 @@ export default function HomePage() {
             </div>
           </Link>
 
-          <div className="block bg-card border rounded-lg p-6 opacity-50 cursor-not-allowed">
+          <Link
+            to="/dates"
+            className="block bg-card border rounded-lg p-6 hover:border-primary transition-colors"
+          >
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold mb-1">
-                  Dates & Times
-                  <span className="ml-2 text-sm font-normal text-muted-foreground">
-                    (Coming Soon)
-                  </span>
-                </h3>
+                <h3 className="text-lg font-semibold mb-1">Dates & Times</h3>
                 <p className="text-muted-foreground">
                   Calendar systems, date patterns, month/day names, and time
                   zones
                 </p>
               </div>
+              <ArrowRight className="w-5 h-5 text-muted-foreground" />
             </div>
-          </div>
+          </Link>
 
-          <div className="block bg-card border rounded-lg p-6 opacity-50 cursor-not-allowed">
+          <Link
+            to="/currency"
+            className="block bg-card border rounded-lg p-6 hover:border-primary transition-colors"
+          >
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold mb-1">
-                  Currencies
-                  <span className="ml-2 text-sm font-normal text-muted-foreground">
-                    (Coming Soon)
-                  </span>
-                </h3>
+                <h3 className="text-lg font-semibold mb-1">Currencies</h3>
                 <p className="text-muted-foreground">
                   Currency symbols, decimal handling, symbol placement, and
                   accounting formats
                 </p>
               </div>
+              <ArrowRight className="w-5 h-5 text-muted-foreground" />
             </div>
-          </div>
+          </Link>
+
+          <Link
+            to="/locale-names"
+            className="block bg-card border rounded-lg p-6 hover:border-primary transition-colors"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold mb-1">Locale Names</h3>
+                <p className="text-muted-foreground">
+                  Language, territory, script, and variant display names across
+                  locales
+                </p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-muted-foreground" />
+            </div>
+          </Link>
+
+          <Link
+            to="/plural-rules"
+            className="block bg-card border rounded-lg p-6 hover:border-primary transition-colors"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold mb-1">Plural Rules</h3>
+                <p className="text-muted-foreground">
+                  Cardinal and ordinal plural categories with interactive
+                  examples
+                </p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-muted-foreground" />
+            </div>
+          </Link>
         </div>
       </div>
 
